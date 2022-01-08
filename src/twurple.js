@@ -5,7 +5,7 @@ const { ApiClient } = require('@twurple/api');
 // const { NgrokAdapter } = require('@twurple/eventsub-ngrok');
 const { ReverseProxyAdapter, EventSubListener } = require('@twurple/eventsub');
 
-// ERROR: listener.listen() hangs
+// NOTE: I can get this running on Railway but no events are received
 
 console.log("twurple.js: w/ ReverseProxyAdapter")
 
