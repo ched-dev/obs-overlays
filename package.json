@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node src/twurple.js",
     "dev": "nodemon src/twurple.js",
+    "deploy": "railway up && railway logs",
     "lint": "eslint --fix src",
     "test": "mocha --exit"
   },
