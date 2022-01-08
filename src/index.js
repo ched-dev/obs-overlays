@@ -1,8 +1,7 @@
-require('dotenv').config();
-
+const env = require('./env');
 const middlewares = require('./middlewares');
 const app = require('./app');
-const { ClientCredentialsAuthProvider } = require('@twurple/auth');
+const { ClientCredentialsAuthProvider, StaticAuthProvider } = require('@twurple/auth');
 const { ApiClient } = require('@twurple/api');
 const { EventSubMiddleware, EventSubListener } = require('@twurple/eventsub');
 const { NgrokAdapter } = require('@twurple/eventsub-ngrok')
@@ -13,27 +12,39 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
+// ERROR: listener.listen() hangs
 
-const authProvider = new ClientCredentialsAuthProvider(clientId, clientSecret);
-const apiClient = new ApiClient({ authProvider });
+const authProvider = new ClientCredentialsAuthProvider(env.client_id, env.client_secret);
 
-const listener = new EventSubListener({
-	apiClient,
-	adapter: new NgrokAdapter(),
-	secret: process.env.SECRET
-});
+// const authProvider = new StaticAuthProvider(env.client_id, env.access_token);
+// const apiClient = new ApiClient({ authProvider });
+
+// const listener = new EventSubListener({
+// 	apiClient,
+// 	adapter: new NgrokAdapter(),
+// 	secret: env.secret
+// });
 // const middleware = new EventSubMiddleware({
 //   apiClient,
 //   hostName: 'd560-136-29-65-148.ngrok.io',
 //   pathPrefix: '/twitch',
-//   secret: process.env.SECRET
+//   secret: env.secret
 // });
 
 
 (async () => {
   const port = process.env.PORT || 5000;
+
+  const tokenInfo = await authProvider.getAccessToken();
+  // console.log("token", token)
+  const appAuthProvider = new StaticAuthProvider(env.client_id, env.access_token, undefined, "app");
+  const apiClient = new ApiClient({ authProvider: appAuthProvider });
+
+  const listener = new EventSubListener({
+    apiClient,
+    adapter: new NgrokAdapter(),
+    secret: env.secret
+  });
 
   const user = await apiClient.users.getUserByName("ched_dev");
   // 261129104
@@ -48,6 +59,10 @@ const listener = new EventSubListener({
     console.log("NGROK catch", x)
   })
 
+  // documentation way, doesn't work
+  // await listener.listen();
+  // console.log(`NGROK Listening: http://localhost:8000`);
+
   // https://gist.github.com/OdatNurd/b9f450cb053d2138187596ddf2b554c5
   // what I did was run that, and then go to http://127.0.0.1:4040/inspect/http in browser
 
@@ -57,11 +72,11 @@ const listener = new EventSubListener({
   });
 
   // try {
-    await listener.subscribeToChannelFollowEvents(user, (data) => {
-      console.log("Follow Event", data)
-      socket.emit("follow", data)
-    })
-    // await middleware.subscribeToChannelFollowEvents( '125328655', event => {
+    // await listener.subscribeToChannelFollowEvents(user, (data) => {
+    //   console.log("Follow Event", data)
+    //   socket.emit("follow", data)
+    // })
+    // await middleware.subscribeToChannelFollowEvents(env.twitch_user_id, event => {
     //   console.log(`${event.userDisplayName} just followed ${event.broadcasterDisplayName}!`);
     // });
   // } catch(e) {
@@ -70,7 +85,10 @@ const listener = new EventSubListener({
 
   // express server
   app.listen(port, async () => {
-    
+    await listener.subscribeToChannelFollowEvents(user, (data) => {
+      console.log("Follow Event", data)
+      socket.emit("follow", data)
+    })
     
     /* eslint-disable no-console */
     console.log(`Listening: http://localhost:${port}`, /*app._router.stack*/);

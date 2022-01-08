@@ -1,15 +1,17 @@
-require('dotenv').config();
+const env = require('./env');
 const { ClientCredentialsAuthProvider } = require('@twurple/auth');
 const { ApiClient } = require('@twurple/api');
 
 const { NgrokAdapter } = require('@twurple/eventsub-ngrok');
 const { EventSubListener } = require('@twurple/eventsub');
 
+// ERROR: listener.listen() hangs
+
 async function testEventSub() {
   // Create an auth provider tied to our application's client ID and secret.
   const authProvider = new ClientCredentialsAuthProvider(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET
+    env.client_id,
+    env.client_secret
   );
 
   // Create a Twitch API instance from which we can make requests. This will
@@ -20,7 +22,7 @@ async function testEventSub() {
   // Set up an EventSubListener instance to listen help us listen for our events
   const listener = new EventSubListener({
     apiClient: api,
-    secret: process.env.SECRET,
+    secret: env.secret,
     adapter: new NgrokAdapter(),
   });
 
@@ -37,7 +39,7 @@ async function testEventSub() {
   await listener.listen();
 
   console.log(`Listening for event: listen`);
-  await listener.subscribeToChannelFollowEvents(261129104, event => {
+  await listener.subscribeToChannelFollowEvents(env.twitch_user_id, event => {
     console.log('Received a follow event');
   });
 
