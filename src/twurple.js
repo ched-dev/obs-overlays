@@ -27,9 +27,9 @@ async function testEventSub() {
   // Setup the adapter to map external to internal
   const adapter = new ReverseProxyAdapter({
     hostName: env.host_name,
-    port: "80"
+    port: env.port
   });
-  console.log(`ReverseProxyAdapter: ${env.host_name}:80`);
+  console.log(`ReverseProxyAdapter: ${env.host_name}:${env.port}`);
 
   // Set up an EventSubListener instance to listen help us listen for our events
   const listener = new EventSubListener({
@@ -55,6 +55,16 @@ async function testEventSub() {
     console.log("Redemption Event", data)
   });
   console.log(`started listening for event: redemption`);
+
+  await listener.subscribeToChannelFollowEvents(env.twitch_user_id, (data) => {
+    console.log("Follow Event", data)
+  });
+  console.log(`started listening for event: follow`);
+
+  await listener.subscribeToChannelUpdateEvents(env.twitch_user_id, (data) => {
+    console.log("Update Event", data)
+  });
+  console.log(`started listening for event: update`);
 
   const hostName = await adapter.getHostName()
   const ngrokPort = await adapter.getListenerPort()
