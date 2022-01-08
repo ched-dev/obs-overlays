@@ -17,28 +17,17 @@ const io = new Server(server);
 const authProvider = new ClientCredentialsAuthProvider(env.client_id, env.client_secret);
 
 // const authProvider = new StaticAuthProvider(env.client_id, env.access_token);
-// const apiClient = new ApiClient({ authProvider });
+const apiClient = new ApiClient({ authProvider });
 
-// const listener = new EventSubListener({
-// 	apiClient,
-// 	adapter: new NgrokAdapter(),
-// 	secret: env.secret
-// });
-// const middleware = new EventSubMiddleware({
-//   apiClient,
-//   hostName: 'd560-136-29-65-148.ngrok.io',
-//   pathPrefix: '/twitch',
-//   secret: env.secret
-// });
 
 
 (async () => {
   const port = process.env.PORT || 5000;
 
-  const tokenInfo = await authProvider.getAccessToken();
+  // const tokenInfo = await authProvider.getAccessToken();
   // console.log("token", token)
-  const appAuthProvider = new StaticAuthProvider(env.client_id, env.access_token, undefined, "app");
-  const apiClient = new ApiClient({ authProvider: appAuthProvider });
+  // const appAuthProvider = new StaticAuthProvider(env.client_id, env.access_token, undefined, "app");
+  // const apiClient = new ApiClient({ authProvider: appAuthProvider });
 
   const listener = new EventSubListener({
     apiClient,
