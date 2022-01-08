@@ -7,6 +7,8 @@ const { EventSubListener } = require('@twurple/eventsub');
 
 // ERROR: listener.listen() hangs
 
+console.log("twurple.js: v1")
+
 async function testEventSub() {
   // Create an auth provider tied to our application's client ID and secret.
   const authProvider = new ClientCredentialsAuthProvider(
@@ -19,12 +21,16 @@ async function testEventSub() {
   // client provider may fetch a new one as needed.
   const api = new ApiClient({ authProvider });
 
+  // Setup an Ngrok adapter which initiates on port 8000
+  const adapter = new NgrokAdapter();
+
   // Set up an EventSubListener instance to listen help us listen for our events
   const listener = new EventSubListener({
     apiClient: api,
     secret: env.secret,
-    adapter: new NgrokAdapter(),
+    adapter,
   });
+  console.log(`EventSubListener created`);
 
   // The EventSubListener starts an internal web server on the port that we
   // configured to listen for the incoming events from Twitch. It's also
@@ -35,15 +41,17 @@ async function testEventSub() {
   // registered with it. This needs to be done first because setting up a
   // listener for the first time requires Twitch to send us a verification that
   // we need to respond to.
-  console.log(`Setting up for incoming Twitch events`);
   await listener.listen();
+  console.log(`started listener.listen()`);
 
-  console.log(`Listening for event: listen`);
-  await listener.subscribeToChannelFollowEvents(env.twitch_user_id, event => {
-    console.log('Received a follow event');
+  await listener.subscribeToChannelRedemptionAddEvents(env.twitch_user_id, (data) => {
+    console.log("Redemption Event", data)
   });
+  console.log(`started listening for event: redemption`);
 
-  console.log('setup complete');
+  const hostName = await adapter.getHostName()
+  const ngrokPort = await adapter.getListenerPort()
+  console.log(`Complete: ${hostName}:${ngrokPort}`);
 }
 
 testEventSub();
