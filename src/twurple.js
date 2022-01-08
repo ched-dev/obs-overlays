@@ -27,9 +27,9 @@ async function testEventSub() {
   // Setup the adapter to map external to internal
   const adapter = new ReverseProxyAdapter({
     hostName: env.host_name,
-    port: env.port
+    port: "80"
   });
-  console.log(`ReverseProxyAdapter: ${env.host_name}:${env.port}`);
+  console.log(`ReverseProxyAdapter: ${env.host_name}:80`);
 
   // Set up an EventSubListener instance to listen help us listen for our events
   const listener = new EventSubListener({
