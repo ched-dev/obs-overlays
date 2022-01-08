@@ -13,6 +13,7 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 // ERROR: listener.listen() hangs
+console.log("src/index.js: Twurple Redemption Events");
 
 const authProvider = new ClientCredentialsAuthProvider(env.client_id, env.client_secret);
 
@@ -74,8 +75,8 @@ const apiClient = new ApiClient({ authProvider });
 
   // express server
   app.listen(port, async () => {
-    await listener.subscribeToChannelFollowEvents(user, (data) => {
-      console.log("Follow Event", data)
+    await listener.subscribeToChannelRedemptionAddEvents(user, (data) => {
+      console.log("Redemption Event", data)
       socket.emit("follow", data)
     })
     
