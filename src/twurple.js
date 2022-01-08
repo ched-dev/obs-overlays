@@ -48,7 +48,7 @@ async function testEventSub() {
   // registered with it. This needs to be done first because setting up a
   // listener for the first time requires Twitch to send us a verification that
   // we need to respond to.
-  await listener.listen();
+  await listener.listen(env.port);
   console.log(`started listener.listen()`);
 
   await listener.subscribeToChannelRedemptionAddEvents(env.twitch_user_id, (data) => {
