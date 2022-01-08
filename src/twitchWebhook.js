@@ -11,8 +11,8 @@ const twitchWebhook = new TwitchWebhook({
   secret: env.secret, // default: false
   // lease_seconds: 259200,    // default: 864000 (maximum value)
   listen: {
-    port: 8080,             // default: 8443
-    host: '127.0.0.1',      // default: 0.0.0.0
+    port: env.port,             // default: 8443
+    host: '0.0.0.0',      // default: 0.0.0.0
     autoStart: true        // default: true
   }
 })

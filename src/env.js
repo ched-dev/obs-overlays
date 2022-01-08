@@ -1,6 +1,8 @@
 require('dotenv').config()
 
 module.exports = {
+  host_name: process.env.HOST_NAME || "localhost",
+  port: process.env.PORT,
   twitch_user_id: process.env.TWITCH_USER_ID,
   client_id: process.env.CLIENT_ID,
   access_token: process.env.ACCESS_TOKEN,

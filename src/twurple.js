@@ -2,12 +2,12 @@ const env = require('./env');
 const { ClientCredentialsAuthProvider } = require('@twurple/auth');
 const { ApiClient } = require('@twurple/api');
 
-const { NgrokAdapter } = require('@twurple/eventsub-ngrok');
-const { EventSubListener } = require('@twurple/eventsub');
+// const { NgrokAdapter } = require('@twurple/eventsub-ngrok');
+const { ReverseProxyAdapter, EventSubListener } = require('@twurple/eventsub');
 
 // ERROR: listener.listen() hangs
 
-console.log("twurple.js: v1")
+console.log("twurple.js: w/ ReverseProxyAdapter")
 
 async function testEventSub() {
   // Create an auth provider tied to our application's client ID and secret.
@@ -22,7 +22,14 @@ async function testEventSub() {
   const api = new ApiClient({ authProvider });
 
   // Setup an Ngrok adapter which initiates on port 8000
-  const adapter = new NgrokAdapter();
+  // const adapter = new NgrokAdapter(env.port);
+  
+  // Setup the adapter to map external to internal
+  const adapter = new ReverseProxyAdapter({
+    hostName: env.host_name,
+    port: env.port
+  });
+  console.log(`ReverseProxyAdapter: ${env.host_name}:${env.port}`);
 
   // Set up an EventSubListener instance to listen help us listen for our events
   const listener = new EventSubListener({

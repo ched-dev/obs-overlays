@@ -10,6 +10,7 @@ add `.env` file with Twitch App info
 
 ```
 PORT=4343
+HOST_NAME=reflective-smoke-production.up.railway.app
 TWITCH_USER_ID=261129104
 SECRET=alongstringoftext
 CLIENT_ID=twitch_app_client_id
