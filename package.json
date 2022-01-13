@@ -4,8 +4,8 @@
   "description": "An OBS Source for Twitch API actions (Follows, Subs, Chats) using Twurple",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/twurple.js",
-    "dev": "nodemon src/twurple.js",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "deploy": "railway up && railway logs",
     "lint": "eslint --fix src",
     "test": "mocha --exit"
@@ -20,6 +20,7 @@
   "dependencies": {
     "@twurple/api": "^5.0.13",
     "@twurple/auth": "^5.0.13",
+    "@twurple/chat": "^5.0.13",
     "@twurple/eventsub": "^5.0.13",
     "@twurple/eventsub-ngrok": "^5.0.13",
     "cors": "^2.8.5",
