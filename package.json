@@ -1,12 +1,11 @@
 {
   "name": "obs-overlays",
-  "version": "0.1.0",
-  "description": "An OBS Source for Twitch API actions (Follows, Subs, Chats) using Twurple",
+  "version": "0.2.0",
+  "description": "An OBS Browser Source for Twitch API actions (Follows, Subs, Cheer, Raids, Channel Rewards, etc.) using Twitch API Unifier (TAU)",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "deploy": "railway up && railway logs",
     "lint": "eslint --fix src",
     "test": "mocha --exit"
   },
@@ -18,19 +17,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@twurple/api": "^5.0.13",
-    "@twurple/auth": "^5.0.13",
-    "@twurple/chat": "^5.0.13",
-    "@twurple/eventsub": "^5.0.13",
-    "@twurple/eventsub-ngrok": "^5.0.13",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "morgan": "^1.10.0",
-    "socket.io": "^4.4.0",
-    "twitch-webhook": "github:JMTK/node-twitch-webhook",
-    "twitchps": "^1.6.0"
+    "ws": "^8.4.0"
   },
   "devDependencies": {
     "eslint": "^7.28.0",

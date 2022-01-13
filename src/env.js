@@ -8,5 +8,7 @@ module.exports = {
   access_token: process.env.ACCESS_TOKEN,
   client_secret: process.env.CLIENT_SECRET,
   secret: process.env.CLIENT_SECRET,
-  twitch_oauth_token: process.env.TWITCH_OAUTH_TOKEN
+  twitch_oauth_token: process.env.TWITCH_OAUTH_TOKEN,
+  tau_port: process.env.TAU_PORT,
+  tau_auth_token: process.env.TAU_AUTH_TOKEN
 }

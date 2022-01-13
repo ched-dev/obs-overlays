@@ -1,4 +1,6 @@
-# Setup
+This project relies on having a [Twitch API Unifier (TAU)](https://github.com/Team-TAU/tau) setup. Please follow their instructions first, then setup this project to consume events.
+
+# OBS Overlays Setup
 
 For first install,
 
@@ -6,19 +8,14 @@ For first install,
 npm install
 ```
 
-add `.env` file with Twitch App info
+add `.env` file with TAU info. All Twitch App settings should have been added to TAU and are not needed here.
 
 ```
+# Express Port
 PORT=4343
-HOST_NAME=reflective-smoke-production.up.railway.app
-TWITCH_USER_ID=261129104
-SECRET=alongstringoftext
-CLIENT_ID=twitch_app_client_id
-CLIENT_SECRET=twitch_app_client_secret
-# Generate ACCESS_TOKEN and REFRESH_TOKEN with
-# https://twitchtokengenerator.com/
-ACCESS_TOKEN=twitch_app_access_token
-REFRESH_TOKEN=twitch_app_refresh_token
+# TAU Settings
+TAU_PORT=5353
+TAU_AUTH_TOKEN=grabTokenFromTauDashboardUserPage
 ```
 
 then run with
@@ -27,18 +24,16 @@ then run with
 npm start
 ```
 
-visit `http://localhost:8000/` and you will see
+your OBS overlays will be running at `http://localhost:4343/` which you can view in browser to debug, or setup inside OBS as a Browser Source when dev complete.
 
-```
-@twurple/eventsub is listening here
-```
+## Praise
 
-## Running Alternate Connections
+I have tested getting Twitch events from EventSub and PubSub with several libraries ([Twurple](https://twurple.js.org/), [TwitchPS](https://www.npmjs.com/package/twitchps), [TwitchWebhook](https://www.npmjs.com/package/twitch-webhook) \[deprecated\]) and none of them would work correctly.
 
-We've tested a few different libraries. Test them with their own commands:
+TAU is the holy grail that takes the pain away. I would recommend it to all who want Twitch event notifications.
 
-```
-node src/twurple.js
-node src/twitchPS.js
-node src/twitchWebhook.js
-```
+If you just want some chat integration, you could use [tmi.js](https://tmijs.com/)
+
+## License
+
+This project is licensed under MIT and is free for you to fork and make your own.
