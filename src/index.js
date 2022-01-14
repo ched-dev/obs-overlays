@@ -16,7 +16,13 @@ io.on("connection", (socket) => {
     },
     "channel-subscribe": (eventData) => {
       console.log("emitted channel-subscribe", eventData)
-    }
+    },
+    "channel-channel_points_custom_reward_redemption-add": (eventData) => {
+      console.log("emitted channel-channel_points_custom_reward_redemption-add", eventData)
+    },
+    "channel-raid": (eventData) => {
+      console.log("emitted channel-raid", eventData)
+    },
   }, socket);
 });
 
