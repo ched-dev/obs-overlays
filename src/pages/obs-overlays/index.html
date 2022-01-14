@@ -11,6 +11,16 @@
 </head>
 
 <body>
+  <div id="canvas"></div>
+
+  <script id="message-template" type="text/template">
+    <div class="notification-position bottom-right">
+      <div class="message">
+        <h2>{title}</h2>
+        <p>{userName} just {action}!</p>
+      </div>
+    </div>
+  </script>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="overlays.js"></script>

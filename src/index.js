@@ -13,6 +13,9 @@ io.on("connection", (socket) => {
   emitTwitchEventsOnSocket({
     "channel-follow": (eventData) => {
       console.log("emitted channel-follow", eventData)
+    },
+    "channel-subscribe": (eventData) => {
+      console.log("emitted channel-subscribe", eventData)
     }
   }, socket);
 });

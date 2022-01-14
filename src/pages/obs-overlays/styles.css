@@ -1,1 +1,48 @@
-body { background: #222 }
+html {
+  font-size: 1.3rem;
+}
+
+body {
+  background: #222;
+  font-family: sans-serif;
+}
+
+h2 {
+  font-family: sans-serif;
+}
+
+#canvas {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  inset: 0;
+}
+
+.notification-position {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+}
+.notification-position.bottom-right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.message {
+  background: goldenrod;
+  color: white;
+  padding: 1rem;
+}
+.message h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+}
+.message p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
