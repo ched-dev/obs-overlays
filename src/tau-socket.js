@@ -40,13 +40,17 @@ module.exports = {
   emitTwitchEventsOnSocket: (events, socket) => {
     const eventsWithSocket = {}
 
-    for (const [eventName, eventCallback] of Object.entries(events)) {
+    events.map(({ eventName }) => {
+      console.log(socket.id, "listening for:", eventName);
       eventsWithSocket[eventName] = (eventData) => {
         socket.emit(eventName, eventData);
-        eventCallback(eventData);
+        console.log(`${socket.id} received:`, eventName, eventData);
       }
-    }
+    })
 
     socketListeners[socket.id] = eventsWithSocket
+  },
+  emitChatCommandsOnSocket: (commands, socket) => {
+
   }
 };

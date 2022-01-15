@@ -1,29 +1,18 @@
-const env = require('./env');
 const app = require('./app');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { emitTwitchEventsOnSocket } = require('./tau-socket')
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
+const io = new Server(httpServer);
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("Socket.io Client Connected", socket.id)
 
-  emitTwitchEventsOnSocket({
-    "channel-follow": (eventData) => {
-      console.log("emitted channel-follow", eventData)
-    },
-    "channel-subscribe": (eventData) => {
-      console.log("emitted channel-subscribe", eventData)
-    },
-    "channel-channel_points_custom_reward_redemption-add": (eventData) => {
-      console.log("emitted channel-channel_points_custom_reward_redemption-add", eventData)
-    },
-    "channel-raid": (eventData) => {
-      console.log("emitted channel-raid", eventData)
-    },
-  }, socket);
+  // import is an esmodule thing
+  const obsOverlaysConfig = await import('./pages/obs-overlays/config.mjs');
+
+  emitTwitchEventsOnSocket(obsOverlaysConfig.eventListeners, socket);
 });
 
 const expressPort = process.env.PORT || 5000;

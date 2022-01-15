@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 const middlewares = require('./middlewares');
-const socket = require('./tau-socket');
+const socket = require('./tau-socket'); // inits on import
 
 const api = require('./api');
 
