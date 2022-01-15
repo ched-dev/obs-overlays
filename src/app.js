@@ -4,12 +4,12 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
 const middlewares = require('./middlewares');
-const socket = require('./tau-socket'); // inits on import
-
+const tauSocket = require('./tau-socket');
 const api = require('./api');
 
 const app = express();
 
+tauSocket.init(); // start listening for TAU events
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());

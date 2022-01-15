@@ -1,11 +1,10 @@
-import * as config from "./config.mjs"
-import sounds from "./sounds.mjs"
+import * as config from "./config/config.mjs"
+import soundPlayer from "./soundPlayer.mjs"
 
 let notificationTimeout = false
 const canvasEl = document.querySelector("#canvas")
 const socket = io();
-sounds.init();
-console.log("config", config)
+soundPlayer.init();
 
 const templates = {
   message: (data) => {
@@ -18,7 +17,8 @@ const templates = {
 }
 
 console.log("init overlays.js", {
-  templates
+  templates,
+  config
 })
 
 config.eventListeners.map(listener => {
@@ -49,7 +49,7 @@ function clearNotification() {
 }
 
 function notificationSound(name = 'wow') {
-  sounds.play(name);
+  soundPlayer.play(name);
 }
 
 
@@ -67,7 +67,7 @@ socket.on("disconnect", () => {
 // debugging chat sound volume
 function renderSoundButtons() {
   let html = ""
-  for (const soundName in sounds.sources) {
+  for (const soundName in soundPlayer.sources) {
     html += `
       <button data-sound-name="${soundName}">
         ${soundName}
