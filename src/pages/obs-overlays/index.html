@@ -22,6 +22,16 @@
     </div>
   </script>
 
+  <script id="message-with-message-template" type="text/template">
+    <div class="notification-position bottom-right">
+      <div class="message">
+        <h2>{title}</h2>
+        <p>{userName} just {action}!</p>
+        <p>{message}</p>
+      </div>
+    </div>
+  </script>
+
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="overlays.mjs"></script>
 </body>

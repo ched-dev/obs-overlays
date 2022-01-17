@@ -20,6 +20,17 @@ export default [
     })
   },
   {
+    eventName: "channel-subscription-message",
+    clientCallback: (eventData) => ({
+      title: "New Subscriber",
+      userName: eventData.user_name,
+      action: "subscribed with the message",
+      message: eventData.message.text,
+      sound: "wow",
+      template: "messageWithMessage"
+    })
+  },
+  {
     eventName: "channel-channel_points_custom_reward_redemption-add",
     clientCallback: (eventData) => ({
       title: "New Redemption",

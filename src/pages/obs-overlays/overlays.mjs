@@ -13,6 +13,13 @@ const templates = {
       html = html.replace(`{${propName}}`, value);
     }
     return html;
+  },
+  messageWithMessage: (data) => {
+    let html = document.querySelector("#message-with-message-template").text;
+    for (const [propName, value] of Object.entries(data || {})) {
+      html = html.replace(`{${propName}}`, value);
+    }
+    return html;
   }
 }
 
@@ -30,7 +37,15 @@ function listenForEvent(eventName, getData) {
 }
 
 function renderMessage(eventData) {
-  canvasEl.innerHTML = templates.message(eventData);
+  const templateName = eventData.template || config.DEFAULT_NOTIFICATION_TEMPLATE;
+  const template = templates.hasOwnProperty(templateName) ? templates[templateName] : null;
+
+  if (!template) {
+    console.error(`Template does not exist: ${templateName}`)
+    return
+  }
+
+  canvasEl.innerHTML = template(eventData);
   notificationSound(eventData.sound);
   startNotificationTimeout(eventData.timeout);
 }
