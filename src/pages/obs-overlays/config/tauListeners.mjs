@@ -1,4 +1,4 @@
-// twitch events to listen for in TAU and emit on socket
+// twitch events to listen for in TAU and emit on client socket
 export default [
   {
     eventName: "channel-follow",

@@ -1,6 +1,13 @@
 import * as config from "./config/config.mjs"
 import soundPlayer from "./soundPlayer.mjs"
 
+// exposed client commands
+const clientCommands = {
+  playSound,
+  renderSoundButtons,
+  clearNotification
+}
+
 let notificationTimeout = false
 const canvasEl = document.querySelector("#canvas")
 const socket = io();
@@ -28,12 +35,33 @@ console.log("init overlays.js", {
   config
 })
 
-config.eventListeners.map(listener => {
+config.tauListeners.map(listener => {
   listenForEvent(listener.eventName, listener.clientCallback)
+})
+
+config.chatCommands.map(listener => {
+  listenForChatCommand(listener.commandName, listener.clientCallback)
 })
 
 function listenForEvent(eventName, getData) {
   socket.on(eventName, (eventData) => renderMessage(getData(eventData)));
+}
+
+function listenForChatCommand(commandName, clientCallback = () => {}) {
+  socket.on(`!${commandName}`, (commandData) => {
+    const clientCaller = clientCallback(commandData);
+    const clientCommand = clientCommands.hasOwnProperty(clientCaller.clientCommand) && clientCommands[clientCaller.clientCommand]
+
+    // console.log({
+    //   commandData,
+    //   clientCaller,
+    //   clientCommand
+    // })
+
+    if (clientCommand) {
+      clientCommand(...clientCaller.args || [])
+    }
+  });
 }
 
 function renderMessage(eventData) {
@@ -46,7 +74,7 @@ function renderMessage(eventData) {
   }
 
   canvasEl.innerHTML = template(eventData);
-  notificationSound(eventData.sound);
+  playSound(eventData.sound);
   startNotificationTimeout(eventData.timeout);
 }
 
@@ -63,7 +91,7 @@ function clearNotification() {
   canvasEl.innerHTML = "";
 }
 
-function notificationSound(name = 'wow') {
+function playSound(name = 'wow') {
   soundPlayer.play(name);
 }
 
@@ -84,19 +112,21 @@ function renderSoundButtons() {
   let html = ""
   for (const soundName in soundPlayer.sources) {
     html += `
-      <button data-sound-name="${soundName}">
+      <button data-sound-name="${soundName}" class="sound-button">
         ${soundName}
       </button>
     `
   }
   canvas.innerHTML = `
     <div class="notification-position bottom-right">
-      ${html}
+      <div className="button-group">
+        ${html}
+      </div>
     </div>
   `
   canvas.addEventListener('click', (e) => {
     if (e.target.dataset.soundName) {
-      notificationSound(e.target.dataset.soundName)
+      playSound(e.target.dataset.soundName)
     }
   })
 }

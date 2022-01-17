@@ -2,6 +2,7 @@ const app = require('./app');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { emitTwitchEventsOnSocket } = require('./tau-socket')
+const { emitChatCommandsOnSocket } = require('./twitch-chat')
 
 const expressPort = process.env.PORT || 5000;
 const httpServer = createServer(app);
@@ -14,7 +15,8 @@ io.on("connection", async (socket) => {
   // import is an esmodule thing
   const obsOverlaysConfig = await import('./pages/obs-overlays/config/config.mjs');
 
-  emitTwitchEventsOnSocket(obsOverlaysConfig.eventListeners, socket);
+  emitTwitchEventsOnSocket(obsOverlaysConfig.tauListeners, socket);
+  emitChatCommandsOnSocket(obsOverlaysConfig.chatCommands, socket, obsOverlaysConfig.twitchChatConfig)
 });
 
 // express server

@@ -4,6 +4,7 @@ module.exports = {
   host_name: process.env.HOST_NAME || "localhost",
   port: process.env.PORT,
   twitch_user_id: process.env.TWITCH_USER_ID,
+  twitch_user_name: process.env.TWITCH_USER_NAME,
   client_id: process.env.CLIENT_ID,
   access_token: process.env.ACCESS_TOKEN,
   client_secret: process.env.CLIENT_SECRET,

@@ -20,7 +20,7 @@ export default {
       this.init();
     }
 
-    if (soundClip.audio) {
+    if (soundClip && soundClip.audio) {
       soundClip.audio.volume = soundClip.volume || config.DEFAULT_SOUND_CLIP_VOLUME; // 0-1
       soundClip.audio.currentTime = 0;
       soundClip.audio.play();

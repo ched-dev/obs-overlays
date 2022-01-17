@@ -46,3 +46,23 @@ h2 {
   margin-top: 0;
   margin-bottom: 0;
 }
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.sound-button {
+  font-size: 1rem;
+  border: solid 1px white;
+  border-radius: 4px;
+  background: none;
+  color: white;
+  margin: 0.4rem;
+}

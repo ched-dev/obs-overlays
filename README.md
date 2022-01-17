@@ -13,6 +13,8 @@ add `.env` file with TAU info. All Twitch App settings should have been added to
 ```
 # Express Port
 PORT=4343
+# tmi.js Settings
+TWITCH_USER_NAME=twitch_user_name
 # TAU Settings
 TAU_PORT=5353
 TAU_AUTH_TOKEN=grabTokenFromTauDashboardUserPage

@@ -23,6 +23,7 @@
     "helmet": "^4.6.0",
     "morgan": "^1.10.0",
     "socket.io": "^4.4.1",
+    "tmi.js": "^1.8.5",
     "ws": "^8.4.0"
   },
   "devDependencies": {

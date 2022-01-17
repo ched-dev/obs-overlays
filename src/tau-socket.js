@@ -49,7 +49,4 @@ module.exports = {
 
     socketListeners[socket.id] = eventsWithSocket
   },
-  emitChatCommandsOnSocket: (commands, socket) => {
-
-  }
 };
