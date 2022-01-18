@@ -4,6 +4,7 @@ import soundPlayer from "./soundPlayer.mjs"
 // exposed client commands
 const clientCommands = {
   playSound,
+  renderTemplate,
   renderSoundButtons,
   clearNotification
 }
@@ -13,25 +14,7 @@ const canvasEl = document.querySelector("#canvas")
 const socket = io();
 soundPlayer.init();
 
-const templates = {
-  message: (data) => {
-    let html = document.querySelector("#message-template").text;
-    for (const [propName, value] of Object.entries(data || {})) {
-      html = html.replace(`{${propName}}`, value);
-    }
-    return html;
-  },
-  messageWithMessage: (data) => {
-    let html = document.querySelector("#message-with-message-template").text;
-    for (const [propName, value] of Object.entries(data || {})) {
-      html = html.replace(`{${propName}}`, value);
-    }
-    return html;
-  }
-}
-
 console.log("init overlays.js", {
-  templates,
   config
 })
 
@@ -44,7 +27,7 @@ config.chatCommands.map(listener => {
 })
 
 function listenForEvent(eventName, getData) {
-  socket.on(eventName, (eventData) => renderMessage(getData(eventData)));
+  socket.on(eventName, (eventData) => renderTemplate(getData(eventData)));
 }
 
 function listenForChatCommand(commandName, clientCallback = () => {}) {
@@ -64,18 +47,24 @@ function listenForChatCommand(commandName, clientCallback = () => {}) {
   });
 }
 
-function renderMessage(eventData) {
+function renderTemplate(eventData) {
   const templateName = eventData.template || config.DEFAULT_NOTIFICATION_TEMPLATE;
-  const template = templates.hasOwnProperty(templateName) ? templates[templateName] : null;
+  const templateEl = document.querySelector(`#${templateName}`);
 
-  if (!template) {
+  if (!templateEl) {
     console.error(`Template does not exist: ${templateName}`)
     return
   }
 
-  canvasEl.innerHTML = template(eventData);
-  playSound(eventData.sound);
-  startNotificationTimeout(eventData.timeout);
+  // get template and render
+  let html = templateEl.textContent;
+  for (const [propName, value] of Object.entries(eventData || {})) {
+    html = html.replace(`{${propName}}`, value);
+  }
+
+  canvasEl.innerHTML = html;
+  eventData.sound && playSound(eventData.sound);
+  eventData.timeout && startNotificationTimeout(eventData.timeout);
 }
 
 function startNotificationTimeout(timeout = config.NOTIFICATION_AUTO_CLOSE_TIMEOUT) {
@@ -91,7 +80,7 @@ function clearNotification() {
   canvasEl.innerHTML = "";
 }
 
-function playSound(name = 'wow') {
+function playSound(name = config.DEFAULT_NOTIFICATION_SOUND) {
   soundPlayer.play(name);
 }
 

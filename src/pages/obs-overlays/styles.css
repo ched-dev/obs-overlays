@@ -66,3 +66,7 @@ h2 {
   color: white;
   margin: 0.4rem;
 }
+
+.no-margin {
+  margin: 0 !important;
+}

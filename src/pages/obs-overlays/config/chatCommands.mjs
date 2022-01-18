@@ -1,6 +1,19 @@
 // twitch chat commands to listen for
 export default [
   {
+    commandName: "brb",
+    clientCallback: ({ args }) => ({
+      clientCommand: "renderTemplate",
+      args: [
+        {
+          template: "message-template",
+          message: `BRB ~ ${args.join(" ") || "Feeding the cat"}`,
+          timeout: false
+        }
+      ],
+    })
+  },
+  {
     commandName: "clear",
     clientCallback: () => ({
       clientCommand: "clearNotification"

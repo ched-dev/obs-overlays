@@ -1,6 +1,6 @@
-This project relies on having a [Twitch API Unifier (TAU)](https://github.com/Team-TAU/tau) setup. Please follow their instructions first, then setup this project to consume events.
-
 # OBS Overlays Setup
+
+> This project relies on having a [Twitch API Unifier (TAU)](https://github.com/Team-TAU/tau) setup. Please follow their instructions first, then setup this project to consume events.
 
 For first install,
 

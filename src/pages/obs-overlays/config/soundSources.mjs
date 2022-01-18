@@ -22,6 +22,10 @@ export default {
     audioSource: 'sounds/chomp-on-this.mp3',
     volume: 1.0
   },
+  'clap': {
+    audioSource: 'sounds/applause-tv.mp3',
+    volume: 0.2
+  },
   'coin': {
     audioSource: 'sounds/mario-coin.mp3',
     volume: 0.4

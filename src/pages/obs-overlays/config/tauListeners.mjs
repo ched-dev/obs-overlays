@@ -7,7 +7,8 @@ export default [
       userName: eventData.user_name,
       action: "follwed",
       sound: "coin",
-      timeout: 7 * 1000
+      timeout: 7 * 1000,
+      template: "user-action-template"
     })
   },
   {
@@ -16,7 +17,8 @@ export default [
       title: "New Subscriber",
       userName: eventData.user_name,
       action: "subscribed",
-      sound: "wow"
+      sound: "wow",
+      template: "user-action-template"
     })
   },
   {
@@ -27,7 +29,7 @@ export default [
       action: "subscribed with the message",
       message: eventData.message.text,
       sound: "wow",
-      template: "messageWithMessage"
+      template: "user-action-with-message-template"
     })
   },
   {
@@ -36,7 +38,8 @@ export default [
       title: "New Redemption",
       userName: eventData.user_name,
       action: `redeemed ${eventData.reward.title}`,
-      sound: "meow"
+      sound: "meow",
+      template: "user-action-template"
     })
   },
   {
@@ -46,7 +49,8 @@ export default [
       userName: eventData.from_broadcaster_user_name,
       action: `raided with ${eventData.viewers} viewers`,
       sound: "chomp",
-      timeout: 12 * 1000
+      timeout: 12 * 1000,
+      template: "user-action-template"
     })
   }
 ]

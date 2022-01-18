@@ -16,13 +16,21 @@
   <script id="message-template" type="text/template">
     <div class="notification-position bottom-right">
       <div class="message">
+        <h2 class="no-margin">{message}</h2>
+      </div>
+    </div>
+  </script>
+
+  <script id="user-action-template" type="text/template">
+    <div class="notification-position bottom-right">
+      <div class="message">
         <h2>{title}</h2>
         <p>{userName} just {action}!</p>
       </div>
     </div>
   </script>
 
-  <script id="message-with-message-template" type="text/template">
+  <script id="user-action-with-message-template" type="text/template">
     <div class="notification-position bottom-right">
       <div class="message">
         <h2>{title}</h2>
