@@ -2,6 +2,7 @@
 export default [
   {
     commandName: "brb",
+    allowedRoles: ["broadcaster"],
     clientCallback: ({ args }) => ({
       clientCommand: "renderTemplate",
       args: [
@@ -16,17 +17,30 @@ export default [
   },
   {
     commandName: "clap",
+    allowedRoles: ["any"],
     shortcuts: ["!s clap"]
   },
   {
     commandName: "clear",
+    allowedRoles: ["broadcaster"],
     clientCallback: () => ({
       clientCommand: "clearNotification"
     })
   },
   {
+    commandName: "dark",
+    allowedRoles: ["any"],
+    shortcuts: ["!s dark"]
+  },
+  {
+    commandName: "eyes",
+    allowedRoles: ["any"],
+    shortcuts: ["!s eyes"]
+  },
+  {
     commandName: "sound",
     aliases: ["s"],
+    allowedRoles: ["any"],
     clientCallback: ({ commandName, args }) => ({
       clientCommand: "playSound",
       args,
@@ -34,13 +48,14 @@ export default [
   },
   {
     commandName: "sounds",
+    allowedRoles: ["any"],
     clientCallback: () => ({
       clientCommand: "renderSoundButtons"
     })
   },
   {
     commandName: "fortune",
-    aliases: [],
+    allowedRoles: ["broadcaster"],
     serverCallback: (commandData) => {
 
     },
@@ -50,10 +65,17 @@ export default [
   },
   {
     commandName: "meow",
+    allowedRoles: ["any"],
     shortcuts: ["!s meow"]
   },
   {
     commandName: "thinking",
+    allowedRoles: ["any"],
     shortcuts: ["!s larry"]
+  },
+  {
+    commandName: "vip",
+    allowedRoles: ["broadcaster", "vip"],
+    shortcuts: ["!s anotherone"]
   },
 ]

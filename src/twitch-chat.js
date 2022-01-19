@@ -21,51 +21,20 @@ const twitchChat = {
     console.log("TMI listening to Twitch Chat...")
 
     this.client.on('message', (channel, tags, message, self) => {
-      console.log(`${tags['display-name']}: ${message}`);
+      const userName = tags['display-name'];
+      console.log(`${userName}: ${message}`);
       console.log({
         channel,
         tags,
         message,
         self
       })
-      const EXAMPLE_DATA = {
-        channel: '#ched_dev',
-        tags: {
-          'badge-info': { subscriber: '10' },
-          badges: { broadcaster: '1', subscriber: '0' },
-          'client-nonce': '1f678a17069fbe4d2d14d32051382354',
-          color: '#DAA520',
-          'display-name': 'ched_dev',
-          emotes: null,
-          'first-msg': false,
-          flags: null,
-          id: '044d2ff9-dd21-473b-9800-8c12105e33bc',
-          mod: false,
-          'room-id': '261129104',
-          subscriber: true,
-          'tmi-sent-ts': '1642395572861',
-          turbo: false,
-          'user-id': '261129104',
-          'user-type': null,
-          'emotes-raw': null,
-          'badge-info-raw': 'subscriber/10',
-          'badges-raw': 'broadcaster/1,subscriber/0',
-          username: 'ched_dev',
-          'message-type': 'chat'
-        },
-        message: '!sound yoink',
-        self: false
-      }
 
       const cleanedMessage = message.trim()
-      const isBroadcaster = tags.username === broadcaster
-      const isModerator = tags.mod && config.allowModCommands
-      const isHighlightedMessage = tags['msg-id'] === "highlighted-message"
       const isCommand = cleanedMessage.startsWith("!")
-      const isCommandAllowed = isBroadcaster || isModerator
-
-      if (!isCommand || !isCommandAllowed) {
-        // ignore
+      
+      // ignore non "!command" messages
+      if (!isCommand) {
         return
       }
 
@@ -76,18 +45,47 @@ const twitchChat = {
       //   !yoink -> !sound yoink (command alias)
       const [rawCommand, ...args] = cleanedMessage.slice(1).split(" ")
       const command = rawCommand.toLowerCase()
+      const commandConfig = commands.find(c => command === c.commandName || (c.aliases && c.aliases.includes(command)))
+
+      // running a command that doesn't exist
+      if (!commandConfig) {
+        console.log("Invalid Command:", message)
+        return
+      }
+
+      const roles = {
+        broadcaster: tags.badges?.broadcaster === "1",
+        moderator: Boolean(tags.mod),
+        vip: tags.badges?.vip === "1",
+        editor: false,
+        subscriber: tags.badges?.subscriber === "1",
+        follower: tags.badges?.follower === "1",
+        any: true
+      }
+      const isHighlightedMessage = tags['msg-id'] === "highlighted-message"
+      
       console.log('command:', {
         command,
+        commandConfig,
         message,
+        roles,
         args
       })
 
+      // access permissions based on roles
+      if (!commandConfig.allowedRoles && !roles.broadcaster) {
+        // default required role is broadcaster
+        return
+      }
+      const commandIsAllowed = commandConfig.allowedRoles.find(role => roles.hasOwnProperty(role) && Boolean(roles[role]));
+      if (!commandIsAllowed) {
+        // did not meet access permissions required
+        console.log("Invalid Command Permissions:", userName, message)
+        return
+      }
+
       // check for shortcut commands
       // shortcut commands fake a message from same user
-      const commandConfig = commands.find(c => c.commandName === command)
-      console.log({
-        commandConfig
-      })
       if (commandConfig && commandConfig.shortcuts && Array.isArray(commandConfig.shortcuts)) {
         commandConfig.shortcuts.map(shortcut => {
           console.log(`(${command}) triggering shortcut:`, shortcut);

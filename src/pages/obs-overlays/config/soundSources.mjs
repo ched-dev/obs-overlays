@@ -44,7 +44,7 @@ export default {
   },
   'eyes': {
     audioSource: 'sounds/simpsons-my-eyes-goggles.mp3',
-    volume: 0.6
+    volume: 1.0
   },
   'hold': {
     audioSource: 'sounds/elevator-music.mp3',
