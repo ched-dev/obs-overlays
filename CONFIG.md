@@ -2,6 +2,18 @@
 
 This app is highly configurable with JavaScript. Here you will find all of the configuration options we have built in and how to use them.
 
+**Table of Contents:**  
+- [Default Config](#default-config)
+  - [`config/config.mjs`](#configconfigmjs)
+  - [`config/tauListeners.mjs`](#configtaulistenersmjs)
+  - [`config/chatCommands.mjs`](#configchatcommandsmjs)
+    - [Simple Commands](#simple-commands)
+    - [Alias Commands](#alias-commands)
+    - [Shortcut Commands](#shortcut-commands)
+    - [Argument Commands](#argument-commands)
+  - [`config/soundSources.mjs`](#configsoundsourcesmjs)
+  - [`config/twitchChat.mjs`](#configtwitchchatmjs)
+
 ## Default Config
 
 This app is pre-configured to my needs for the time being. Feel free to fork and use your own configuration. In the future we hope to make configuration even simpler with JSON which could allow upgrade paths to receive new features.
@@ -28,7 +40,7 @@ This file stores all the event listeners from TAU's `websocket_event.event_type`
 Each event has respective data so we use `clientCallback(eventData)` to allow you to pull data as needed.
 
 **Example config**  
-```
+```js
 {
   eventName: "channel-follow",
   clientCallback: (eventData) => ({
@@ -56,12 +68,12 @@ This file holds all [chat commands](./DEV.md#chat+command) we are listening for.
 
 Commands can have specific traits to them, such as [simple](#simple+commands) (minimum props required), [alias](#alias+commands), [shortcuts](#shortcut+commands), or provide [arguments](#argument+commands).
 
-### Simple Commands
+#### Simple Commands
 
 We start with a simple command as the bare bones for triggering things when a chat command is used.
 
 **Example of simple command:**  
-```
+```js
 {
   commandName: "sounds",
   allowedRoles: ["any"],
@@ -92,7 +104,7 @@ We start with a simple command as the bare bones for triggering things when a ch
 We define an alias command as a command with the `aliases` array which allows this command to be called with a different `commandName`. 
 
 **Example of alias command:**  
-```
+```js
 {
   commandName: "sound",
   aliases: ["s"],
@@ -112,7 +124,7 @@ We define an alias command as a command with the `aliases` array which allows th
 We define a shortcut command as a command with the `shortcuts` property which triggers additional commands you've defined.
 
 **Example of shortcut command:**  
-```
+```js
 {
   commandName: "clap",
   allowedRoles: ["any"],
@@ -130,7 +142,7 @@ We define a shortcut command as a command with the `shortcuts` property which tr
 We define an argument command as a command with the `shortcuts` property which triggers additional commands. 
 
 **Example of argument command:**  
-```
+```js
 {
   commandName: "sound",
   aliases: ["s"],
@@ -147,7 +159,7 @@ We define an argument command as a command with the `shortcuts` property which t
 - `clientCallback()` should return `args` that are passed on to the [client command](./DEV.md#client+command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`). 
 
 **Example of `clientCallback()` with args:**  
-```
+```js
 {
   commandName: "brb",
   allowedRoles: ["broadcaster"],
@@ -175,7 +187,7 @@ We define an argument command as a command with the `shortcuts` property which t
 This file holds all sounds that can be played with the [Sound Player](./DEV.md#sound+player). The key of the object is the sound name. The sound name is what matches with the `!sound soundName` command.
 
 **Example of sound source config:**  
-```
+```js
 'airhorn': {
   audioSource: 'sounds/air-horn.mp3',
   volume: 0.2
@@ -185,7 +197,7 @@ This file holds all sounds that can be played with the [Sound Player](./DEV.md#s
 **Sound source props:**  
 - the key name (e.g. `'airhorn'`) is how we reference the `soundName`. It can be formatted how you please (e.g. `air-horn`, `air_horn`, `airHorn`) but cannot contain spaces and is case sensitive.
 - `audioSource` is the path to the sound file. We store all sounds in `sounds/*`.
-- `volume` is the volume level to set for this specific sound. A value of `0 ... 1` (e.g. `0.3`, `1.0`). If none is provided we use a default value from [`config/config.mjs`](#`config/config.mjs`). We use this to level out volume of loud vs quiet clips, then you can set the global volume level in OBS audio output.
+- `volume` is the volume level to set for this specific sound. A value of `0 ... 1` (e.g. `0.3`, `1.0`). If none is provided we use a default value from [`config/config.mjs`](#configconfigmjs). We use this to level out volume of loud vs quiet clips, then you can set the global volume level in OBS audio output.
 
 
 ### `config/twitchChat.mjs`

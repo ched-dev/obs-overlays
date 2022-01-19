@@ -10,6 +10,11 @@ This local application allows you to display overlays in OBS using a browser sou
 - Include your own [client commands](./DEV.md#Client+Commands) to run custom code when a command is triggered
 - Easily customized through [code config files](./CONFIG.md)
 
+# Documentation
+
+- [Config Docs](./CONFIG.md) for configuring this app
+- [Developer Docs](./DEV.md) for setting up this app
+
 # Setup: Running as an OBS Browser Source
 
 This setup requires you to have [node.js](https://nodejs.org/) installed to run a local server on your computer. [Docker](https://www.docker.com/) is also required to run TAU.
@@ -48,7 +53,7 @@ I have tested getting Twitch events from EventSub and PubSub with several librar
 
 [TAU](https://github.com/Team-TAU/tau) is the holy grail that takes the pain away. I would recommend it to all who want Twitch event notifications.
 
-If you just want some chat integration, you could use [tmi.js](https://tmijs.com/)
+If you just want some chat integration, you could use [tmi.js](https://tmijs.com/).
 
 ## License
 
