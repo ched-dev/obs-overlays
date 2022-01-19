@@ -1,0 +1,193 @@
+# OBS Overlays Configuration
+
+This app is highly configurable with JavaScript. Here you will find all of the configuration options we have built in and how to use them.
+
+## Default Config
+
+This app is pre-configured to my needs for the time being. Feel free to fork and use your own configuration. In the future we hope to make configuration even simpler with JSON which could allow upgrade paths to receive new features.
+
+Configuration is currently stored at `src/pages/obs-overlays/*`.
+
+### `config/config.mjs`
+
+The main configuration that holds some loose items and imports additional configuration from `config/*`.
+
+**Required options:**  
+- `NOTIFICATION_AUTO_CLOSE_TIMEOUT` is stored in milliseconds
+- `DEFAULT_NOTIFICATION_TEMPLATE` from `index.html` (defaults to `"message-template"`)
+- `DEFAULT_NOTIFICATION_SOUND` from `config/sourceSounds.mjs` names (defaults to `"wow"`)
+- `DEFAULT_SOUND_CLIP_VOLUME` is used in Sound Player as a fallback if `config/soundSources.mjs` entry does not contain a `volume` (defaults to `0.8`)
+
+### `config/tauListeners.mjs`
+
+This file stores all the event listeners from TAU's `websocket_event.event_type`.
+
+**Available Events**  
+`channel-follow`, `channel-subscribe`, `channel-subscription-message`, `channel-subscription-gift`, `channel-raid`, `channel-cheer`, and more undocumented.
+
+Each event has respective data so we use `clientCallback(eventData)` to allow you to pull data as needed.
+
+**Example config**  
+```
+{
+  eventName: "channel-follow",
+  clientCallback: (eventData) => ({
+    title: "New Follower",
+    userName: eventData.user_name,
+    action: "follwed",
+    sound: "coin",
+    timeout: 7 * 1000,
+    template: "user-action-template"
+  })
+}
+```
+
+**Additional configuration available:**  
+- `sound` which maps to a `config.soundSource` name
+- `timeout` which controls the auto-close of a notification (a millisecond value, or `false` to leave open)
+- `template` which matches the id of an `index.html` `<script>` template (defaults to `message-template`)
+- the remaining properties are passed to template HTML and available as `{propName}` (e.g. `{userName} just {action}!`)
+
+All of the `tauListeners` will be emitted to the client for action. If you don't listen to it, the event will not be emitted to the client.
+
+### `config/chatCommands.mjs`
+
+This file holds all [chat commands](DEV.md#Chat+Commands) we are listening for. A chat command is triggered via Twitch Chat using a message like `!clap` or with args `!brb Bathroom Break`.
+
+Commands can have specific traits to them, such as [simple](#Simple+Commands) (minimum props required), [alias](#Alias+Commands), [shortcuts](#Shortcut+Commands), or provide [arguments](#Argument+Commands).
+
+### Simple Commands
+
+We start with a simple command as the bare bones for triggering things when a chat command is used.
+
+**Example of simple command:**  
+```
+{
+  commandName: "sounds",
+  allowedRoles: ["any"],
+  clientCallback: () => ({
+    clientCommand: "renderSoundButtons"
+  })
+}
+```
+
+**Simple Command Props (available in all type of commands):**  
+- `commandName` is the name of the command, minus the `!` (e.g. `!sound wow` would be `commandName: "sound"`)
+- `allowedRoles` are the chatter roles required for this command to run. A chatter can run a command if they match _ANY_ of the roles. Available roles in order of exclusivity:
+  - `broadcaster` the user who is broadcasting (default requirement if `allowedRoles` not filled in)
+  - `moderator` is a moderator in the channel
+  - `vip` is a vip in the channel
+  - `subscriber` is someone who is currently subscribed in the channel
+  - `any` is any viewer who can chat
+- `clientCallback()` is used to format our data and configuration for calling [client commands](DEV.md#Client+Commands). Available client commands are:
+  - `renderSoundButtons` renders available sounds on screen, has no args
+  - `clearNotification` clears all content on the screen, has no args
+  - `playSound` plays a sound by name (e.g. `args: ["soundName"]`)
+  - `renderTemplate` renders a template by id (e.g. `args: ["template-id"]`)
+  - Invalid command names and args will be ignored
+  - See [Argument Commands](#Argument+Commands) for args info on `clientCallback()`
+
+#### Alias Commands
+
+We define an alias command as a command with the `aliases` array which allows this command to be called with a different `commandName`. 
+
+**Example of alias command:**  
+```
+{
+  commandName: "sound",
+  aliases: ["s"],
+  allowedRoles: ["any"],
+  clientCallback: ({ commandName, args }) => ({
+    clientCommand: "playSound",
+    args,
+  })
+}
+```
+
+**Alias Command Props:**  
+- `aliases` should be an array of alias strings (e.g. `aliases: ["s"]` allows `!s soundName` to redirect to `!sound soundName`). Any arguments passed will be passed along to main `commandName`.
+
+#### Shortcut Commands
+
+We define a shortcut command as a command with the `shortcuts` property which triggers additional commands you've defined.
+
+**Example of shortcut command:**  
+```
+{
+  commandName: "clap",
+  allowedRoles: ["any"],
+  shortcuts: ["!s clap"]
+}
+```
+
+**Shortcut Command Props:**  
+- Inherits all [simple command props](#Simple+Commands)
+- `shortcuts` allow us to run other commands. It works as if a user was to send a message with the shortcut (e.g. `ched_dev: !sound wow`) so permissions of the shortcut will be honored by their command (e.g. `commandName: "sound"`)
+- can still use `clientCallback()` if needed
+
+#### Argument Commands
+
+We define an argument command as a command with the `shortcuts` property which triggers additional commands. 
+
+**Example of argument command:**  
+```
+{
+  commandName: "sound",
+  aliases: ["s"],
+  allowedRoles: ["any"],
+  clientCallback: ({ commandName, args }) => ({
+    clientCommand: "playSound",
+    args,
+  })
+}
+```
+
+**Argument Command Props:**  
+- Inherits props from all other types of commands
+- `clientCallback()` should return `args` that are passed on to the [client command](DEV.md#Client+Command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`). 
+
+**Example of `clientCallback()` with args:**  
+```
+{
+  commandName: "brb",
+  allowedRoles: ["broadcaster"],
+  clientCallback: ({ commandName, args }) => ({
+    clientCommand: "renderTemplate",
+    args: [
+      {
+        template: "message-template",
+        message: `BRB ~ ${args.join(" ") || "Feeding the cat"}`,
+        sound: "brb",
+        timeout: false
+      }
+    ],
+  })
+}
+```
+
+**`clientCallback()` arguments:**  
+- `commandInfo` is the only argument passed to `clientCallback()` and it's an object with the following properties:
+  - `commandName` is the name of the command (e.g. `sound`, `s`, `brb`). This could be different than the `commandName` on the top level because it could be one of the `aliasCommands`.
+  - `args` is the remaining values split on an empty string (e.g. `!brb Bathroom Break` -> `args: ["Bathroom", "Break"]` and `!sound wow` -> `args: ["wow"]`). You can use the args to allow subcommands or combine back to one value (e.g. `args.join(" ")` -> `"Bathroom Break"`).
+
+### `config/soundSources.mjs`
+
+This file holds all sounds that can be played with the [Sound Player](DEV.md#Sound+Player). The key of the object is the sound name. The sound name is what matches with the `!sound soundName` command.
+
+**Example of sound source config:**  
+```
+'airhorn': {
+  audioSource: 'sounds/air-horn.mp3',
+  volume: 0.2
+},
+```
+
+**Sound source props:**  
+- the key name (e.g. `'airhorn'`) is how we reference the `soundName`. It can be formatted how you please (e.g. `air-horn`, `air_horn`, `airHorn`) but cannot contain spaces and is case sensitive.
+- `audioSource` is the path to the sound file. We store all sounds in `sounds/*`.
+- `volume` is the volume level to set for this specific sound. A value of `0 ... 1` (e.g. `0.3`, `1.0`). If none is provided we use a default value from [`config/config.mjs`](#`config/config.mjs`). We use this to level out volume of loud vs quiet clips, then you can set the global volume level in OBS audio output.
+
+
+### `config/twitchChat.mjs`
+
+This file holds additional configuration related to tmi.js, but we currently don't support any configuration.

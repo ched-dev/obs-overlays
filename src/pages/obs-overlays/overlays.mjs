@@ -2,6 +2,7 @@ import * as config from "./config/config.mjs"
 import soundPlayer from "./soundPlayer.mjs"
 
 // exposed client commands
+// these commands should handle bad data (__proto__) in args
 const clientCommands = {
   playSound,
   renderTemplate,
@@ -15,7 +16,8 @@ const socket = io();
 soundPlayer.init();
 
 console.log("init overlays.js", {
-  config
+  config,
+  clientCommands
 })
 
 config.tauListeners.map(listener => {
@@ -30,24 +32,23 @@ function listenForEvent(eventName, getData) {
   socket.on(eventName, (eventData) => renderTemplate(getData(eventData)));
 }
 
-function listenForChatCommand(commandName, clientCallback = () => {}) {
+function listenForChatCommand(commandName, getClientCommand = () => {}) {
   socket.on(`!${commandName}`, (commandData) => {
-    const clientCommandConfig = clientCallback(commandData) || {};
-    const clientCommand = clientCommands.hasOwnProperty(clientCommandConfig.clientCommand) && clientCommands[clientCommandConfig.clientCommand]
-
-    // console.log({
-    //   commandData,
-    //   clientCommandConfig,
-    //   clientCommand
-    // })
+    const clientCommandConfig = getClientCommand(commandData) || {};
+    const clientCommand = clientCommands.hasOwnProperty(clientCommandConfig.clientCommand) && clientCommands[clientCommandConfig.clientCommand];
 
     if (clientCommand) {
-      clientCommand(...clientCommandConfig.args || [])
+      clientCommand(...clientCommandConfig.args || []);
     }
   });
 }
 
 function renderTemplate(eventData) {
+  if (typeof eventData !== "object") {
+    console.error("renderTemplate: eventData is incorrect format", { eventData });
+    return
+  }
+
   const templateName = eventData.template || config.DEFAULT_NOTIFICATION_TEMPLATE;
   const templateEl = document.querySelector(`#${templateName}`);
 
@@ -87,19 +88,6 @@ function playSound(name = config.DEFAULT_NOTIFICATION_SOUND) {
   soundPlayer.play(name);
 }
 
-
-// client-side
-socket.on("connect", () => {
-  console.log("Socket.io Connected:", socket.id); // x8WIv7-mJelg7on_ALbx
-});
-
-socket.on("disconnect", () => {
-  console.log("Socket.io Disconnected:", socket.id); // undefined
-});
-
-
-
-// debugging chat sound volume
 function renderSoundButtons() {
   let html = ""
   for (const soundName in soundPlayer.sources) {
@@ -122,4 +110,13 @@ function renderSoundButtons() {
     }
   })
 }
-if (config.DEBUG_RENDER_SOUND_BUTTONS) renderSoundButtons()
+renderSoundButtons()
+
+// client-side
+socket.on("connect", () => {
+  console.log("Socket.io Connected:", socket.id); // x8WIv7-mJelg7on_ALbx
+});
+
+socket.on("disconnect", () => {
+  console.log("Socket.io Disconnected:", socket.id); // undefined
+});

@@ -11,14 +11,14 @@ export default {
     this.initialized = true;
   },
   get(name) {
-    return this.sources[name];
+    return this.sources.hasOwnProperty(name) ? this.sources[name] : undefined;
   },
   play(name) {
-    const soundClip = this.get(name);
-
     if (!this.initialized) {
       this.init();
     }
+
+    const soundClip = this.get(name);
 
     if (soundClip && soundClip.audio) {
       soundClip.audio.volume = soundClip.volume || config.DEFAULT_SOUND_CLIP_VOLUME; // 0-1
