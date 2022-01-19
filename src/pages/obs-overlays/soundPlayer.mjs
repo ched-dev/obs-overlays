@@ -14,6 +14,10 @@ export default {
     return this.sources.hasOwnProperty(name) ? this.sources[name] : undefined;
   },
   play(name) {
+    if (!name) {
+      console.log("Sound Player: No sound name provided");
+      return;
+    }
     if (!this.initialized) {
       this.init();
     }

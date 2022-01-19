@@ -18,7 +18,7 @@ This app is highly configurable with JavaScript. Here you will find all of the c
 
 This app is pre-configured to my needs for the time being. Feel free to fork and use your own configuration. In the future we hope to make configuration even simpler with JSON which could allow upgrade paths to receive new features.
 
-Configuration is currently stored at `src/pages/obs-overlays/*`.
+Configuration is stored at `src/pages/obs-overlays/*`.
 
 ---
 
@@ -39,11 +39,17 @@ The main configuration that holds some loose items and imports additional config
 This file stores all the event listeners from TAU's `websocket_event.event_type`.
 
 **Available Events**  
-`channel-follow`, `channel-subscribe`, `channel-subscription-message`, `channel-subscription-gift`, `channel-raid`, `channel-cheer`, and more undocumented.
+- `channel-follow`
+- `channel-subscribe`
+- `channel-subscription-message`
+- `channel-subscription-gift`
+- `channel-raid`
+- `channel-cheer`
+- and more undocumented
 
 Each event has respective data so we use `clientCallback(eventData)` to allow you to pull data as needed.
 
-**Example config**  
+**Example tauListener config**  
 ```js
 {
   eventName: "channel-follow",
@@ -59,8 +65,8 @@ Each event has respective data so we use `clientCallback(eventData)` to allow yo
 ```
 
 **Additional configuration available:**  
-- `sound` which maps to a `config.soundSource` name
-- `timeout` which controls the auto-close of a notification (a millisecond value, or `false` to leave open)
+- `sound` which maps to a `config.soundSources.*` name
+- `timeout` which controls the auto-close of a notification (a millisecond value `7 * 1000`, or `false` to leave open)
 - `template` which matches the id of an `index.html` `<script>` template (defaults to `message-template`)
 - the remaining properties are passed to template HTML and available as `{propName}` (e.g. `{userName} just {action}!`)
 
@@ -94,16 +100,16 @@ We start with a simple command as the bare bones for triggering things when a ch
 **Simple Command Props (available in all type of commands):**  
 - `commandName` is the name of the command, minus the `!` (e.g. `!sound wow` would be `commandName: "sound"`)
 - `allowedRoles` are the chatter roles required for this command to run. A chatter can run a command if they match _ANY_ of the roles. Available roles in order of exclusivity:
-  - `broadcaster` the user who is broadcasting (default requirement if `allowedRoles` not filled in)
+  - `broadcaster` the user who is broadcasting. We use this as default to prevent exposing commands if `allowedRoles` not provided.
   - `moderator` is a moderator in the channel
   - `vip` is a vip in the channel
   - `subscriber` is someone who is currently subscribed in the channel
-  - `any` is any viewer who can chat
+  - `any` is any viewer who can send a chat
 - `clientCallback()` is used to format our data and configuration for calling [client commands](./DEV.md#client-command). Available client commands are:
-  - `renderSoundButtons` renders available sounds on screen, has no args
+  - `renderSoundButtons` renders available sound names on screen, has no args
   - `clearNotification` clears all content on the screen, has no args
   - `playSound` plays a sound by name (e.g. `args: ["soundName"]`)
-  - `renderTemplate` renders a template by id (e.g. `args: ["template-id"]`)
+  - `renderTemplate` renders a matching `index.html` `<script>` template by id (e.g. `args: ["template-id"]`)
   - Invalid command names and args will be ignored
   - See [Argument Commands](#argument-commands) for args info on `clientCallback()`
 
@@ -121,13 +127,13 @@ We define an alias command as a command with the `aliases` array which allows th
   allowedRoles: ["any"],
   clientCallback: ({ commandName, args }) => ({
     clientCommand: "playSound",
-    args,
+    args
   })
 }
 ```
 
 **Alias Command Props:**  
-- `aliases` should be an array of alias strings (e.g. `aliases: ["s"]` allows `!s soundName` to redirect to `!sound soundName`). Any arguments passed will be passed along to main `commandName`.
+- `aliases` should be an array of alias strings (e.g. `aliases: ["s"]` allows `!s soundName` to rewrite to `!sound soundName`). Any arguments passed will be passed along to main `commandName`.
 
 ---
 
@@ -147,13 +153,13 @@ We define a shortcut command as a command with the `shortcuts` property which tr
 **Shortcut Command Props:**  
 - Inherits all [simple command props](#simple-commands)
 - `shortcuts` allow us to run other commands. It works as if a user was to send a message with the shortcut (e.g. `ched_dev: !sound wow`) so permissions of the shortcut will be honored by their command (e.g. `commandName: "sound"`)
-- can still use `clientCallback()` if needed
+- can still use `clientCallback()` if desired
 
 ---
 
 #### Argument Commands
 
-We define an argument command as a command with the `shortcuts` property which triggers additional commands. 
+We define an argument command as a command that passes arguments on to the client command. You can pass args through as they were given, or generate your own args based on passed in args.
 
 **Example of argument command:**  
 ```js
@@ -163,16 +169,16 @@ We define an argument command as a command with the `shortcuts` property which t
   allowedRoles: ["any"],
   clientCallback: ({ commandName, args }) => ({
     clientCommand: "playSound",
-    args,
+    args
   })
 }
 ```
 
 **Argument Command Props:**  
 - Inherits props from all other types of commands
-- `clientCallback()` should return `args` that are passed on to the [client command](./DEV.md#client-command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`). 
+- `clientCallback()` should return `args` that are passed on to the [client command](./DEV.md#client-command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`).
 
-**Example of `clientCallback()` with args:**  
+**Example of `clientCallback()` with dynamic args:**  
 ```js
 {
   commandName: "brb",
@@ -186,7 +192,7 @@ We define an argument command as a command with the `shortcuts` property which t
         sound: "brb",
         timeout: false
       }
-    ],
+    ]
   })
 }
 ```
@@ -207,7 +213,7 @@ This file holds all sounds that can be played with the [Sound Player](./DEV.md#s
 'airhorn': {
   audioSource: 'sounds/air-horn.mp3',
   volume: 0.2
-},
+}
 ```
 
 **Sound source props:**  
@@ -219,4 +225,4 @@ This file holds all sounds that can be played with the [Sound Player](./DEV.md#s
 
 ### `config/twitchChat.mjs`
 
-This file holds additional configuration related to tmi.js, but we currently don't support any configuration.
+This file holds additional configuration related to tmi.js, but we don't support additional tmi.js configuration yet.
