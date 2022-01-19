@@ -8,10 +8,15 @@ export default [
         {
           template: "message-template",
           message: `BRB ~ ${args.join(" ") || "Feeding the cat"}`,
+          sound: "brb",
           timeout: false
         }
       ],
     })
+  },
+  {
+    commandName: "clap",
+    shortcuts: ["!s clap"]
   },
   {
     commandName: "clear",
@@ -42,5 +47,13 @@ export default [
     clientCallback: (commandData) => ({
       
     })
+  },
+  {
+    commandName: "meow",
+    shortcuts: ["!s meow"]
+  },
+  {
+    commandName: "thinking",
+    shortcuts: ["!s larry"]
   },
 ]

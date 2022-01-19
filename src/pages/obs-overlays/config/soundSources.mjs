@@ -108,6 +108,6 @@ export default {
   },
   'yoink': {
     audioSource: 'sounds/simpsons-bart-yoink.mp3',
-    volume: 0.2
+    volume: 0.4
   },
 }

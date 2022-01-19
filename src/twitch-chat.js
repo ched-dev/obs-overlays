@@ -5,7 +5,7 @@ const socketListeners = {
 }
 
 const twitchChat = {
-  init(config = {}) {
+  init(config = {}, commands = []) {
     if (this.initialized) {
       return
     }
@@ -82,6 +82,19 @@ const twitchChat = {
         args
       })
 
+      // check for shortcut commands
+      // shortcut commands fake a message from same user
+      const commandConfig = commands.find(c => c.commandName === command)
+      console.log({
+        commandConfig
+      })
+      if (commandConfig && commandConfig.shortcuts && Array.isArray(commandConfig.shortcuts)) {
+        commandConfig.shortcuts.map(shortcut => {
+          console.log(`(${command}) triggering shortcut:`, shortcut);
+          this.client.emit('message', channel, tags, shortcut, self);
+        })
+      }
+
       // trigger command
       for (const [socketId, listeners] of Object.entries(socketListeners)) {
         if (listeners.hasOwnProperty(command) && typeof listeners[command] === "function") {
@@ -97,7 +110,7 @@ const twitchChat = {
   },
   emitChatCommandsOnSocket: (commands, socket, config) => {
     // start listening for Twitch Chat messages now
-    twitchChat.init(config);
+    twitchChat.init(config, commands);
 
     const commandsWithSocket = {}
 

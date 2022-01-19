@@ -38,7 +38,7 @@ export default [
       title: "New Redemption",
       userName: eventData.user_name,
       action: `redeemed ${eventData.reward.title}`,
-      sound: "meow",
+      sound: "yoink",
       template: "user-action-template"
     })
   },

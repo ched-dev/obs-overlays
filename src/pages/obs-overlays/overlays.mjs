@@ -32,17 +32,17 @@ function listenForEvent(eventName, getData) {
 
 function listenForChatCommand(commandName, clientCallback = () => {}) {
   socket.on(`!${commandName}`, (commandData) => {
-    const clientCaller = clientCallback(commandData);
-    const clientCommand = clientCommands.hasOwnProperty(clientCaller.clientCommand) && clientCommands[clientCaller.clientCommand]
+    const clientCommandConfig = clientCallback(commandData) || {};
+    const clientCommand = clientCommands.hasOwnProperty(clientCommandConfig.clientCommand) && clientCommands[clientCommandConfig.clientCommand]
 
     // console.log({
     //   commandData,
-    //   clientCaller,
+    //   clientCommandConfig,
     //   clientCommand
     // })
 
     if (clientCommand) {
-      clientCommand(...clientCaller.args || [])
+      clientCommand(...clientCommandConfig.args || [])
     }
   });
 }
@@ -64,7 +64,7 @@ function renderTemplate(eventData) {
 
   canvasEl.innerHTML = html;
   eventData.sound && playSound(eventData.sound);
-  eventData.timeout && startNotificationTimeout(eventData.timeout);
+  startNotificationTimeout(eventData.timeout);
 }
 
 function startNotificationTimeout(timeout = config.NOTIFICATION_AUTO_CLOSE_TIMEOUT) {
@@ -72,6 +72,9 @@ function startNotificationTimeout(timeout = config.NOTIFICATION_AUTO_CLOSE_TIMEO
     clearTimeout(notificationTimeout)
     notificationTimeout = false
   }
+
+  // 0 or false will not run
+  if (!timeout) return
 
   notificationTimeout = setTimeout(() => clearNotification(), timeout)
 }
