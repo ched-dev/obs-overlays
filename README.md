@@ -7,15 +7,15 @@ This local application allows you to display overlays in OBS using a browser sou
 - Listening to Twitch EventSub events via [TAU](https://github.com/Team-TAU/tau) admin interface (e.g. Follows, Subscriptions, Channel Point Redemptions, etc.)
 - Sends all Twitch events to a browser client application with custom templates to render on screen
 - Uses [tmi.js](https://tmijs.com/) to allow listening for chat commands (e.g. `!sounds`, `!ask Tabs or spaces?`) with access permissions
-- Include your own [client commands](./DEV.md#Client+Commands) to run custom code when a command is triggered
-- Easily customized through [code config files](./CONFIG.md)
+- Include your own [client commands](./DEV.md#client+command) to run custom code when a command is triggered
+- Easily customized through [config files](./CONFIG.md)
 
-# Documentation
+## Documentation
 
 - [Config Docs](./CONFIG.md) for configuring this app
 - [Developer Docs](./DEV.md) for setting up this app
 
-# Setup: Running as an OBS Browser Source
+## Setup: Running as an OBS Browser Source
 
 This setup requires you to have [node.js](https://nodejs.org/) installed to run a local server on your computer. [Docker](https://www.docker.com/) is also required to run TAU.
 
