@@ -52,9 +52,9 @@ All of the `tauListeners` will be emitted to the client for action. If you don't
 
 ### `config/chatCommands.mjs`
 
-This file holds all [chat commands](DEV.md#Chat+Commands) we are listening for. A chat command is triggered via Twitch Chat using a message like `!clap` or with args `!brb Bathroom Break`.
+This file holds all [chat commands](./DEV.md#chat+command) we are listening for. A chat command is triggered via Twitch Chat using a message like `!clap` or with args `!brb Bathroom Break`.
 
-Commands can have specific traits to them, such as [simple](#Simple+Commands) (minimum props required), [alias](#Alias+Commands), [shortcuts](#Shortcut+Commands), or provide [arguments](#Argument+Commands).
+Commands can have specific traits to them, such as [simple](#simple+commands) (minimum props required), [alias](#alias+commands), [shortcuts](#shortcut+commands), or provide [arguments](#argument+commands).
 
 ### Simple Commands
 
@@ -79,13 +79,13 @@ We start with a simple command as the bare bones for triggering things when a ch
   - `vip` is a vip in the channel
   - `subscriber` is someone who is currently subscribed in the channel
   - `any` is any viewer who can chat
-- `clientCallback()` is used to format our data and configuration for calling [client commands](DEV.md#Client+Commands). Available client commands are:
+- `clientCallback()` is used to format our data and configuration for calling [client commands](./DEV.md#client+command). Available client commands are:
   - `renderSoundButtons` renders available sounds on screen, has no args
   - `clearNotification` clears all content on the screen, has no args
   - `playSound` plays a sound by name (e.g. `args: ["soundName"]`)
   - `renderTemplate` renders a template by id (e.g. `args: ["template-id"]`)
   - Invalid command names and args will be ignored
-  - See [Argument Commands](#Argument+Commands) for args info on `clientCallback()`
+  - See [Argument Commands](#argument+commands) for args info on `clientCallback()`
 
 #### Alias Commands
 
@@ -121,7 +121,7 @@ We define a shortcut command as a command with the `shortcuts` property which tr
 ```
 
 **Shortcut Command Props:**  
-- Inherits all [simple command props](#Simple+Commands)
+- Inherits all [simple command props](#simple+commands)
 - `shortcuts` allow us to run other commands. It works as if a user was to send a message with the shortcut (e.g. `ched_dev: !sound wow`) so permissions of the shortcut will be honored by their command (e.g. `commandName: "sound"`)
 - can still use `clientCallback()` if needed
 
@@ -144,7 +144,7 @@ We define an argument command as a command with the `shortcuts` property which t
 
 **Argument Command Props:**  
 - Inherits props from all other types of commands
-- `clientCallback()` should return `args` that are passed on to the [client command](DEV.md#Client+Command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`). 
+- `clientCallback()` should return `args` that are passed on to the [client command](./DEV.md#client+command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`). 
 
 **Example of `clientCallback()` with args:**  
 ```
@@ -172,7 +172,7 @@ We define an argument command as a command with the `shortcuts` property which t
 
 ### `config/soundSources.mjs`
 
-This file holds all sounds that can be played with the [Sound Player](DEV.md#Sound+Player). The key of the object is the sound name. The sound name is what matches with the `!sound soundName` command.
+This file holds all sounds that can be played with the [Sound Player](./DEV.md#sound+player). The key of the object is the sound name. The sound name is what matches with the `!sound soundName` command.
 
 **Example of sound source config:**  
 ```

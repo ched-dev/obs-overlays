@@ -8,10 +8,10 @@ This documentation targets a developer trying to add features, commands, sounds,
 A dockerized admin interface for receiving Twitch Events via EventSub (Twitch API). We use it to listen for follows, subscriptions, channel redemptions, etc. It emits all of its events on Websockets which we consume in our express app. For chat we use tmi.js.
 
 #### tmi.js (tmi)
-A chat connection client for reading and sending messages in Twitch Chat. We use it to listen for [chat commands](#Chat+Commands) and send messages in chat with our chat bot.
+A chat connection client for reading and sending messages in Twitch Chat. We use it to listen for [chat commands](#chat+command) and send messages in chat with our chat bot.
 
 #### express
-The node.js server framework used to run our [server](#Server). It is responsible for serving and rendering our [client](#Client) via a socket.io websocket connection.
+The node.js server framework used to run our [server](#server). It is responsible for serving and rendering our [client](#client) via a socket.io websocket connection.
 
 ## How it works
 
@@ -23,7 +23,7 @@ Understanding this flow will simplify development greatly. "Winging it" is possi
 
 ### Config Files
 
-The app aims to be highly configurable without needing to write code. We give you some common [client commands](#Client+Command) (e.g. Notification, Message, Clear), but you can extend the functionality if you know how to code in JavaScript.
+The app aims to be highly configurable without needing to write code. We give you some common [client commands](#client+command) (e.g. Notification, Message, Clear), but you can extend the functionality if you know how to code in JavaScript.
 
 ## Terms
 
@@ -43,7 +43,7 @@ When we mention the server, we are referring to the node.js express application 
 A chat command refers to commands sent via Twitch Chat. They can be sent by any viewer in chat, but might not always be acted upon unless they have access permissions and it is a valid command.
 
 #### Client Command
-A client command is a function that can be triggered inside the [client application](#Client). These commands are triggered via [chat commands](#Chat+Command).
+A client command is a function that can be triggered inside the [client application](#client). These commands are triggered via [chat commands](#chat+command).
 
 #### Sound Player
 The sound player handles playing of all sounds in the client application. It cannot be used server side. The OBS browser will play sounds that are captured on stream. You should turn on "monitoring and output" to hear sounds as well. The common browsers (Chrome, Firefox, etc.) require you to interact with the page before a sound can be played. We pull all our sound sources from `obs-overlays/config/soundSources.mjs`. Sound files live in `obs-overlays/sounds/*`.
