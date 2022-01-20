@@ -1,6 +1,17 @@
+// @ts-check
+
 import * as config from "./config/config.mjs"
 
-export default {
+/**
+ * @typedef {import("./types").SoundPlayer} SoundPlayer
+ */
+
+/** @type {SoundPlayer} */
+const soundPlayer = {
+
+  initialized: false,
+  sources: config.soundSources,
+
   // init all audio sources so they are ready to play
   // only works in browser
   // the user must interact with the page before audio can play
@@ -29,6 +40,7 @@ export default {
       soundClip.audio.currentTime = 0;
       soundClip.audio.play();
     }
-  },
-  sources: config.soundSources
+  }
 };
+
+export default soundPlayer;

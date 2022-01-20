@@ -15,8 +15,8 @@ io.on("connection", async (socket) => {
   // import is an esmodule thing
   const obsOverlaysConfig = await import('./pages/obs-overlays/config/config.mjs');
 
-  emitTwitchEventsOnSocket(obsOverlaysConfig.tauListeners, socket);
-  emitChatCommandsOnSocket(obsOverlaysConfig.chatCommands, socket, obsOverlaysConfig.twitchChatConfig)
+  emitTwitchEventsOnSocket(obsOverlaysConfig.eventCommands, socket);
+  emitChatCommandsOnSocket(obsOverlaysConfig.chatCommands, socket, obsOverlaysConfig.twitchChatConfig);
 });
 
 // express server

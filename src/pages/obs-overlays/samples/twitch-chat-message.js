@@ -111,3 +111,28 @@ export const FIRST_MESSAGE = {
   message: 'totally a bot follower',
   self: false
 }
+
+// for chatCommandCallback(commandData)
+export const CHAT_COMMAND_CALLBACK_DATA = {
+  channel: '#ched_dev',
+  commandName: 'whoami',
+  args: [],
+  chatter: {
+    userId: '261129104',
+    userName: 'ched_dev',
+    displayName: 'ched_dev',
+    roles: {
+      broadcaster: true,
+      moderator: false,
+      vip: false,
+      editor: false,
+      subscriber: false,
+      follower: false,
+      any: true
+    },
+    features: {
+      firstMessage: false,
+      highlightedMessage: false
+    }
+  }
+}

@@ -1,9 +1,21 @@
-// twitch chat commands to listen for
-export default [
+// @ts-check
+
+/**
+ * Chat Commands Configuration
+ * ===
+ * Twitch chat message commands to listen for
+ */
+
+/**
+ * @typedef {import("../types").ChatCommand} ChatCommand
+ */
+
+/** @type {ChatCommand[]} */
+const chatCommands = [
   {
     commandName: "brb",
     allowedRoles: ["broadcaster"],
-    clientCallback: ({ args }) => ({
+    chatCommandCallback: ({ args }) => ({
       clientCommand: "renderTemplate",
       args: [
         {
@@ -23,8 +35,8 @@ export default [
   {
     commandName: "clear",
     allowedRoles: ["broadcaster"],
-    clientCallback: () => ({
-      clientCommand: "clearNotification"
+    chatCommandCallback: () => ({
+      clientCommand: "clearScreen"
     })
   },
   {
@@ -41,7 +53,7 @@ export default [
     commandName: "sound",
     aliases: ["s"],
     allowedRoles: ["any"],
-    clientCallback: ({ commandName, args }) => ({
+    chatCommandCallback: ({ commandName, args }) => ({
       clientCommand: "playSound",
       args,
     })
@@ -49,18 +61,15 @@ export default [
   {
     commandName: "sounds",
     allowedRoles: ["any"],
-    clientCallback: () => ({
+    chatCommandCallback: () => ({
       clientCommand: "renderSoundButtons"
     })
   },
   {
     commandName: "fortune",
     allowedRoles: ["broadcaster"],
-    serverCallback: (commandData) => {
-
-    },
-    clientCallback: (commandData) => ({
-      
+    chatCommandCallback: (commandData) => ({
+      clientCommand: "clearScreen"
     })
   },
   {
@@ -78,4 +87,14 @@ export default [
     allowedRoles: ["broadcaster", "vip"],
     shortcuts: ["!s anotherone"]
   },
+  {
+    commandName: "whoami",
+    allowedRoles: ["any"],
+    chatCommandCallback: ({ commandName, args, chatter }) => ({
+      clientCommand: "sendBotMessage",
+      args: [`@${chatter.userName}, you're a ...`]
+    })
+  },
 ]
+
+export default chatCommands

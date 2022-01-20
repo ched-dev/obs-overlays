@@ -14,9 +14,11 @@ This documentation targets a developer trying to add their own features, command
   - [General](#general)
     - [Client](#client)
     - [Server](#server)
+    - [Chat Bot](#chat-bot)
   - [Domain Specific Data](#domain-specific-data)
+    - [Event Sub](#event-command)
     - [Chat Command](#chat-command)
-    - [Client Command](#client-command)
+    - [Client Actions](#client-command)
     - [Sound Player](#sound-player)
 
 
@@ -43,7 +45,7 @@ Understanding this flow will simplify development greatly. "Winging it" is possi
 
 ### Config Files
 
-The app aims to be highly configurable without needing to write code. We give you some common [client commands](#client-command) (e.g. `playSound`, `renderSoundButtons`, `renderTemplate`, `clearNotification`), but you can create your own functionality if you know how to code in JavaScript.
+The app aims to be highly configurable without needing to write code. We give you some common [client commands](#client-command) (e.g. `playSound`, `renderSoundButtons`, `renderTemplate`, `clearScreen`), but you can create your own functionality if you know how to code in JavaScript.
 
 ## Terminology / Vocabulary
 
@@ -67,11 +69,14 @@ When we mention the server, we are referring to the node.js express application 
 
 ---
 
+#### Event Command
+An event command is one of the follow, subscribe, redeem, etc. events triggered by TAU. All event commands are stored in `obs-overlays/config/eventCommands.mjs`. A list of available client commands can be found in the [Simple Commands](./config.md#simple-commands) documentation.
+
 #### Chat Command
 A chat command refers to commands sent via Twitch Chat (e.g. `!clap` or `!brb Bathroom Break`). They can be sent by any viewer in chat, but might not always be acted upon unless they have access permissions and it is a valid command. All chat commands are stored in `obs-overlays/config/chatCommands.mjs`.
 
 #### Client Command
-A client command is a function that can be triggered inside the [client application](#client). These commands are triggered via [chat commands](#chat-command). A list of available client commands can be found in the [Simple Commands](./CONFIG.md#simple-commands) documentation.
+A client command is a function that can be triggered inside the [client application](#client). These commands can be triggered via [chat commands](#chat-command) or [event commands](#event-command). A list of available client commands can be found in the [Client Commands](./config.md#client-commands) documentation.
 
 #### Sound Player
 The sound player handles playing of all sounds in the client application. It cannot be used server side. The OBS browser will play sounds that are subsequently captured on stream. You should turn on "monitoring and output" to hear sounds as well. The common browsers (Chrome, Firefox, etc.) require you to interact with the page before a sound can be played. We pull all our sound sources from `obs-overlays/config/soundSources.mjs`. Sound files live in `obs-overlays/sounds/*`.

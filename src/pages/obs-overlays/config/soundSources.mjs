@@ -1,4 +1,17 @@
-export default {
+// @ts-check
+
+/**
+ * Sound Source Configuration
+ * ===
+ * Sounds that can be triggered with Client Command `playSound`
+ */
+
+/**
+ * @typedef {import("../types").SoundSources} SoundSources
+ */
+
+/** @type {SoundSources} */
+const soundSources = {
   'airhorn': {
     audioSource: 'sounds/air-horn.mp3',
     volume: 0.2
@@ -111,3 +124,5 @@ export default {
     volume: 0.4
   },
 }
+
+export default soundSources

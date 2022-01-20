@@ -5,7 +5,7 @@ This app is highly configurable with JavaScript. Here you will find all of the c
 **Table of Contents:**  
 - [Default Config](#default-config)
   - [`config/config.mjs`](#configconfigmjs)
-  - [`config/tauListeners.mjs`](#configtaulistenersmjs)
+  - [`config/eventCommands.mjs`](#configeventcommandsmjs)
   - [`config/chatCommands.mjs`](#configchatcommandsmjs)
     - [Simple Commands](#simple-commands)
     - [Alias Commands](#alias-commands)
@@ -34,32 +34,59 @@ The main configuration that holds some loose items and imports additional config
 
 ---
 
-### `config/tauListeners.mjs`
+### `config/eventCommands.mjs`
 
 This file stores all the event listeners from TAU's `websocket_event.event_type`.
 
 **Available Events**  
-- `channel-follow`
-- `channel-subscribe`
-- `channel-subscription-message`
-- `channel-subscription-gift`
-- `channel-raid`
-- `channel-cheer`
-- and more undocumented
+```
+[
+  "channel-ban",
+  "channel-channel_points_custom_reward-add",
+  "channel-channel_points_custom_reward-remove",
+  "channel-channel_points_custom_reward-update",
+  "channel-channel_points_custom_reward_redemption-add",
+  "channel-channel_points_custom_reward_redemption-update",
+  "channel-cheer",
+  "channel-follow",
+  "channel-hype_train-begin",
+  "channel-hype_train-end",
+  "channel-hype_train-progress",
+  "channel-moderator-add",
+  "channel-moderator-remove",
+  "channel-poll-begin",
+  "channel-poll-end",
+  "channel-poll-progress",
+  "channel-prediction-begin",
+  "channel-prediction-end",
+  "channel-prediction-lock",
+  "channel-prediction-progress",
+  "channel-raid",
+  "channel-subscribe",
+  "channel-subscription-end",
+  "channel-subscription-gift",
+  "channel-subscription-message",
+  "channel-unban",
+  "channel-update"
+]
+```
 
-Each event has respective data so we use `clientCallback(eventData)` to allow you to pull data as needed.
+Each event has respective data so we use `eventCommandCallback(eventData)` to allow you to pull data as needed.
 
 **Example tauListener config**  
 ```js
 {
   eventName: "channel-follow",
-  clientCallback: (eventData) => ({
-    title: "New Follower",
-    userName: eventData.user_name,
-    action: "follwed",
-    sound: "coin",
-    timeout: 7 * 1000,
-    template: "user-action-template"
+  eventCommandCallback: (eventData) => ({
+    clientCommand: "renderTemplate",
+    args: [{
+      title: "New Follower",
+      userName: eventData.user_name,
+      action: "follwed",
+      sound: "coin",
+      timeout: 7 * 1000,
+      template: "user-action-template"
+    }]
   })
 }
 ```
@@ -70,13 +97,13 @@ Each event has respective data so we use `clientCallback(eventData)` to allow yo
 - `template` which matches the id of an `index.html` `<script>` template (defaults to `message-template`)
 - the remaining properties are passed to template HTML and available as `{propName}` (e.g. `{userName} just {action}!`)
 
-All of the `tauListeners` will be emitted to the client for action. If you don't listen to it, the event will not be emitted to the client.
+All of the `eventCommands` will be emitted to the if you listen for it. We don't emit events if you don't have a listener for it.
 
 ---
 
 ### `config/chatCommands.mjs`
 
-This file holds all [chat commands](./DEV.md#chat-command) we are listening for. A chat command is triggered via Twitch Chat using a message like `!clap` or with args `!brb Bathroom Break`.
+This file holds all [chat commands](./overview.md#chat-command) we are listening for. A chat command is triggered via Twitch Chat using a message like `!clap` or with args `!brb Bathroom Break`.
 
 Commands can have specific traits to them, such as [simple](#simple-commands) (minimum props required), [alias](#alias-commands), [shortcuts](#shortcut-commands), or provide [arguments](#argument-commands).
 
@@ -91,7 +118,7 @@ We start with a simple command as the bare bones for triggering things when a ch
 {
   commandName: "sounds",
   allowedRoles: ["any"],
-  clientCallback: () => ({
+  chatCommandCallback: () => ({
     clientCommand: "renderSoundButtons"
   })
 }
@@ -105,13 +132,15 @@ We start with a simple command as the bare bones for triggering things when a ch
   - `vip` is a vip in the channel
   - `subscriber` is someone who is currently subscribed in the channel
   - `any` is any viewer who can send a chat
-- `clientCallback()` is used to format our data and configuration for calling [client commands](./DEV.md#client-command). Available client commands are:
+- `chatCommandCallback()` is used to format our data and configuration for calling [client commands](./overview.md#client-command). Available client commands are:
   - `renderSoundButtons` renders available sound names on screen, has no args
-  - `clearNotification` clears all content on the screen, has no args
+  - `clearScreen` clears all content on the screen, has no args
   - `playSound` plays a sound by name (e.g. `args: ["soundName"]`)
   - `renderTemplate` renders a matching `index.html` `<script>` template by id (e.g. `args: ["template-id"]`)
+  - `sendBotMessage` sends a message to chat from your bot account (e.g. `args: ["Message to send"]`)
+  - `ignore` allows you to skip running a `clientCommand` for this entry. Alternatively, you can return a falsy value from `chatCommandCallback()`.
   - Invalid command names and args will be ignored
-  - See [Argument Commands](#argument-commands) for args info on `clientCallback()`
+  - See [Argument Commands](#argument-commands) for args info on `chatCommandCallback()`
 
 ---
 
@@ -125,7 +154,7 @@ We define an alias command as a command with the `aliases` array which allows th
   commandName: "sound",
   aliases: ["s"],
   allowedRoles: ["any"],
-  clientCallback: ({ commandName, args }) => ({
+  chatCommandCallback: ({ commandName, args }) => ({
     clientCommand: "playSound",
     args
   })
@@ -153,7 +182,7 @@ We define a shortcut command as a command with the `shortcuts` property which tr
 **Shortcut Command Props:**  
 - Inherits all [simple command props](#simple-commands)
 - `shortcuts` allow us to run other commands. It works as if a user was to send a message with the shortcut (e.g. `ched_dev: !sound wow`) so permissions of the shortcut will be honored by their command (e.g. `commandName: "sound"`)
-- can still use `clientCallback()` if desired
+- can still use `chatCommandCallback()` if desired
 
 ---
 
@@ -167,7 +196,7 @@ We define an argument command as a command that passes arguments on to the clien
   commandName: "sound",
   aliases: ["s"],
   allowedRoles: ["any"],
-  clientCallback: ({ commandName, args }) => ({
+  chatCommandCallback: ({ commandName, args }) => ({
     clientCommand: "playSound",
     args
   })
@@ -176,14 +205,14 @@ We define an argument command as a command that passes arguments on to the clien
 
 **Argument Command Props:**  
 - Inherits props from all other types of commands
-- `clientCallback()` should return `args` that are passed on to the [client command](./DEV.md#client-command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`).
+- `chatCommandCallback()` should return `args` that are passed on to the [client command](./overview.md#client-command). They are spread on as arguments (e.g. `args: ["one", "two"]` will become `playSound("one", "two")`).
 
-**Example of `clientCallback()` with dynamic args:**  
+**Example of `chatCommandCallback()` with dynamic args:**  
 ```js
 {
   commandName: "brb",
   allowedRoles: ["broadcaster"],
-  clientCallback: ({ commandName, args }) => ({
+  chatCommandCallback: ({ commandName, args }) => ({
     clientCommand: "renderTemplate",
     args: [
       {
@@ -197,16 +226,23 @@ We define an argument command as a command that passes arguments on to the clien
 }
 ```
 
-**`clientCallback()` arguments:**  
-- `commandInfo` is the only argument passed to `clientCallback()` and it's an object with the following properties:
+**`chatCommandCallback()` arguments:**  
+- `commandInfo` is the only argument passed to `chatCommandCallback()` and it's an object with the following properties:
   - `commandName` is the name of the command (e.g. `sound`, `s`, `brb`). This could be different than the `commandName` on the top level because it could be one of the `aliasCommands`.
   - `args` is the remaining values split on an empty string (e.g. `!brb Bathroom Break` -> `args: ["Bathroom", "Break"]` and `!sound wow` -> `args: ["wow"]`). You can use the args to allow subcommands or combine back to one value (e.g. `args.join(" ")` -> `"Bathroom Break"`).
+  - `channelName` is the name of the channel this is running in (e.g. `#ched_dev`)
+  - `chatter` is aggregated information about the chatter. Available properties include:
+    - `roles`
+      - see roles
+    - `features`
+      - `firstMessage` is true if it's the users first message in this channel
+      - `highlightedMessage` is whether the message was redeemed with "Highlight My Message"
 
 ---
 
 ### `config/soundSources.mjs`
 
-This file holds all sounds that can be played with the [Sound Player](./DEV.md#sound-player). The key of the object is the sound name. The sound name is what matches with the `!sound soundName` command.
+This file holds all sounds that can be played with the [Sound Player](./overview.md#sound-player). The key of the object is the sound name. The sound name is what matches with the `!sound soundName` command.
 
 **Example of sound source config:**  
 ```js

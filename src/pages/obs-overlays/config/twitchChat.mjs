@@ -1,4 +1,5 @@
 // tmi.js and twitch chat config
 export default {
-  // broadcaster: "ched_dev"
+  twitchBotChannelToJoin: "ched_dev",
+  ignoredChatters: ["cheds_bot"]
 }

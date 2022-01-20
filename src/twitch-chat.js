@@ -1,19 +1,49 @@
+// @ts-check
 const env = require('./env');
 const tmi = require('tmi.js');
+
+/**
+ * @typedef {import("./pages/obs-overlays/types").TwitchChat} TwitchChat
+ * @typedef {import("./pages/obs-overlays/types").TwitchChatSocketListenerEvents} TwitchChatSocketListenerEvents
+ * @typedef {import("./pages/obs-overlays/types").TwitchChatSocketListenerEventCallback} TwitchChatSocketListenerEventCallback
+ * @typedef {import("./pages/obs-overlays/types").EventCommands} EventCommands
+ * @typedef {import("./pages/obs-overlays/types").EventCommandCallbackData} EventCommandCallbackData
+ * @typedef {import("./pages/obs-overlays/types").Socket} Socket
+ * @typedef {import("./pages/obs-overlays/types").ChatUserRoles} ChatUserRoles
+ * @typedef {import("./pages/obs-overlays/types").ChatUserFeatures} ChatUserFeatures
+ * @typedef {import("./pages/obs-overlays/types").ChatCommandChatter} ChatCommandChatter
+ */
+
+/** @type {TwitchChatSocketListenerEvents} */
 const socketListeners = {
   // [socket.id]: { [command-name]: commandCallback }
 }
 
+/** @type {TwitchChat} */
 const twitchChat = {
+  initialized: false,
+  broadcaster: null,
+  ignoredChatters: [],
+  hasIdentity: false,
+  client: null, // tmi Client
+
   init(config = {}, commands = []) {
     if (this.initialized) {
       return
     }
 
-    const broadcaster = config.broadcaster || env.twitch_user_name
+    this.broadcaster = config.broadcaster || env.twitch_user_name
+    this.ignoredChatters = config.ignoredChatters || []
+
+    const identity = {
+      username: env.twitch_bot_user_name,
+      password: env.twitch_bot_oauth_token
+    };
+    this.hasIdentity = Boolean(identity.username && identity.password)
 
     this.client = new tmi.Client({
-      channels: [broadcaster]
+      identity: this.hasIdentity ? identity : undefined,
+      channels: [this.broadcaster]
     });
 
     this.client.connect();
@@ -21,7 +51,12 @@ const twitchChat = {
     console.log("TMI listening to Twitch Chat...")
 
     this.client.on('message', (channel, tags, message, self) => {
-      const userName = tags['display-name'];
+      const displayName = tags['display-name'];
+      const userName = tags.username;
+      const userId = tags['user-id'];
+      if (this.ignoredChatters && this.ignoredChatters.includes(userName)) {
+        return
+      }
       console.log(`${userName}: ${message}`);
       console.log({
         channel,
@@ -53,6 +88,7 @@ const twitchChat = {
         return
       }
 
+      /** @type {ChatUserRoles} */
       const roles = {
         broadcaster: tags.badges?.broadcaster === "1",
         moderator: Boolean(tags.mod),
@@ -62,14 +98,26 @@ const twitchChat = {
         follower: tags.badges?.follower === "1",
         any: true
       }
-      const isHighlightedMessage = tags['msg-id'] === "highlighted-message"
+      /** @type {ChatUserFeatures} */
+      const features = {
+        firstMessage: Boolean(tags['first-msg']),
+        highlightedMessage: tags['msg-id'] === "highlighted-message"
+      }
+      /** @type {ChatCommandChatter} */
+      const chatter = {
+        userId,
+        userName,
+        displayName,
+        roles,
+        features
+      }
       
       console.log('command:', {
         command,
         commandConfig,
+        args,
         message,
-        roles,
-        args
+        chatter
       })
 
       // access permissions based on roles
@@ -80,7 +128,7 @@ const twitchChat = {
       const commandIsAllowed = commandConfig.allowedRoles.find(role => roles.hasOwnProperty(role) && Boolean(roles[role]));
       if (!commandIsAllowed) {
         // did not meet access permissions required
-        console.log("Invalid Command Permissions:", userName, message)
+        console.log("Invalid Command Permissions:", chatter, message)
         return
       }
 
@@ -97,8 +145,10 @@ const twitchChat = {
       for (const [socketId, listeners] of Object.entries(socketListeners)) {
         if (listeners.hasOwnProperty(command) && typeof listeners[command] === "function") {
           listeners[command]({
+            channel,
             commandName: command,
-            args
+            args,
+            chatter
           })
         }
       }
@@ -106,27 +156,38 @@ const twitchChat = {
 
     this.initialized = true;
   },
-  emitChatCommandsOnSocket: (commands, socket, config) => {
+  emitChatCommandsOnSocket: (commands, socket, twitchChatConfig) => {
     // start listening for Twitch Chat messages now
-    twitchChat.init(config, commands);
+    twitchChat.init(twitchChatConfig, commands);
+
+    // listen for sending chat bot messages
+    socket.on('sendBotMessage', (/** @type {string} **/ message) => {
+      console.log("sendBotMessage received:", {
+        message
+      })
+      twitchChat.client.opts.channels.map(channel => {
+        twitchChat.client.say(channel, message)
+      })
+    })
 
     const commandsWithSocket = {}
 
-    commands.map(({ commandName, aliases, serverCallback }) => {
-      console.log(socket.id, "listening for:", `!${commandName}`);
+    commands.map(({ commandName, aliases }) => {
+      console.log(socket.id, "listening for chatCommand:", `!${commandName}`);
 
-      const commandCallback = (commandData) => {
+      /** @type {TwitchChatSocketListenerEventCallback} */
+      const commandEmitter = (commandData) => {
         socket.emit(`!${commandName}`, commandData);
-        console.log(`${socket.id} received:`, `!${commandName}`, commandData);
+        console.log(`${socket.id} received chatCommand:`, `!${commandName}`, commandData);
       }
 
-      commandsWithSocket[commandName] = commandCallback
+      commandsWithSocket[commandName] = commandEmitter
 
       // redirect aliases
       if (aliases && aliases.length) {
         aliases.forEach(commandAlias => {
-          console.log(socket.id, "listening for:", `!${commandAlias} -> !${commandName}`);
-          commandsWithSocket[commandAlias] = commandCallback
+          console.log(socket.id, "listening for chatCommand:", `!${commandAlias} -> !${commandName}`);
+          commandsWithSocket[commandAlias] = commandEmitter
         })
       }
     })
