@@ -1,17 +1,21 @@
-# OBS Overlays Configuration
+# Configuration
 
-This app is highly configurable with JavaScript. Here you will find all of the configuration options we have built-in and how to use them.
+This application is highly customizable with simple JavaScript configuration. Here you will find all of the options we have built-in and how to use them.
 
 **Table of Contents:**  
 - [Default Config](#default-config)
   - [`config/config.mjs`](#configconfigmjs)
-  - [`config/eventCommands.mjs`](#configeventcommandsmjs)
-  - [`config/chatCommands.mjs`](#configchatcommandsmjs)
+- [Listener & Command Config](#listener--command-config)
+  - [Client Command Callback](#client-command-callback)
     - [Simple Commands](#simple-commands)
     - [Alias Commands](#alias-commands)
     - [Shortcut Commands](#shortcut-commands)
     - [Argument Commands](#argument-commands)
-  - [`config/soundSources.mjs`](#configsoundsourcesmjs)
+  - [`config/eventCommands.mjs`](#configeventcommandsmjs)
+  - [`config/chatCommands.mjs`](#configchatcommandsmjs)
+- [Integration Config](#integration-config)
+  - [`config/templates.mjs`](#configtemplatesmjs)
+  - [`config/sounds.mjs`](#configsoundsmjs)
   - [`config/twitchChat.mjs`](#configtwitchchatmjs)
 
 ## Default Config
@@ -38,40 +42,9 @@ The main configuration that holds some loose items and imports additional config
 
 This file stores all the event listeners from TAU's `websocket_event.event_type`.
 
-**Available Events**  
-```
-[
-  "channel-ban",
-  "channel-channel_points_custom_reward-add",
-  "channel-channel_points_custom_reward-remove",
-  "channel-channel_points_custom_reward-update",
-  "channel-channel_points_custom_reward_redemption-add",
-  "channel-channel_points_custom_reward_redemption-update",
-  "channel-cheer",
-  "channel-follow",
-  "channel-hype_train-begin",
-  "channel-hype_train-end",
-  "channel-hype_train-progress",
-  "channel-moderator-add",
-  "channel-moderator-remove",
-  "channel-poll-begin",
-  "channel-poll-end",
-  "channel-poll-progress",
-  "channel-prediction-begin",
-  "channel-prediction-end",
-  "channel-prediction-lock",
-  "channel-prediction-progress",
-  "channel-raid",
-  "channel-subscribe",
-  "channel-subscription-end",
-  "channel-subscription-gift",
-  "channel-subscription-message",
-  "channel-unban",
-  "channel-update"
-]
-```
+Some sample events are `channel-follow`, `channel-subscribe`, `channel-raid`, etc. To see a full list, visit [Twitch Events Specs page](./specs/index.md#twitch-events).
 
-Each event has respective data so we use `eventCommandCallback(eventData)` to allow you to pull data as needed.
+Each event has respective data so we use `eventCommandCallback(eventData)` to allow you to pull data as needed. You can see the format of `eventData` under the "Websocket Stream" in the [TAU Dashboard]()
 
 **Example tauListener config**  
 ```js

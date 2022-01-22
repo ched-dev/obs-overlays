@@ -124,7 +124,7 @@ export interface TauSocketListeners {
  */
 export interface TwitchChat {
   initialized: boolean;
-  broadcaster: string; // ched_dev
+  channelName: string; // ched_dev
   ignoredChatters: TwitchChatConfig["ignoredChatters"]; // ched_dev
   hasIdentity: boolean;
   client: TmiClient;
@@ -132,8 +132,7 @@ export interface TwitchChat {
   emitChatCommandsOnSocket: (commands: ChatCommands, socket: Socket, twitchChatConfig: TwitchChatConfig) => void;
 }
 interface TwitchChatConfig {
-  broadcaster?: string; // "ched_dev"
-  twitchBotChannelToJoin?: string; // "ched_dev"
+  channelName?: string; // "ched_dev"
   ignoredChatters?: string[]; // ["ched_dev"]
 }
 interface TmiClient {

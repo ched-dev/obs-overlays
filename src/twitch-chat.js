@@ -22,7 +22,7 @@ const socketListeners = {
 /** @type {TwitchChat} */
 const twitchChat = {
   initialized: false,
-  broadcaster: null,
+  channelName: null,
   ignoredChatters: [],
   hasIdentity: false,
   client: null, // tmi Client
@@ -32,8 +32,9 @@ const twitchChat = {
       return
     }
 
-    this.broadcaster = config.broadcaster || env.twitch_user_name
+    this.channelName = config.channelName || env.twitch_channel_name
     this.ignoredChatters = config.ignoredChatters || []
+    console.log("this.channelName", this.channelName, env)
 
     const identity = {
       username: env.twitch_bot_user_name,
@@ -43,7 +44,7 @@ const twitchChat = {
 
     this.client = new tmi.Client({
       identity: this.hasIdentity ? identity : undefined,
-      channels: [this.broadcaster]
+      channels: [this.channelName]
     });
 
     this.client.connect();

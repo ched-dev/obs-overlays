@@ -77,7 +77,9 @@ function handleClientCommand(config) {
  * @param {EventCommand} eventCommand
  */
 function listenForEventCommand({ eventName, eventCommandCallback = () => {} }) {
-  socket.on(eventName, (/** @type {EventCommandCallbackData} */ eventData) => {
+  socket.on(eventName, (
+    /** @type {EventCommandCallbackData} */ eventData
+  ) => {
     handleClientCommand(eventCommandCallback(eventData));
   });
 }
@@ -86,7 +88,9 @@ function listenForEventCommand({ eventName, eventCommandCallback = () => {} }) {
  * @param {ChatCommand} chatCommand
  */
 function listenForChatCommand({ commandName, chatCommandCallback = () => {} }) {
-  socket.on(`!${commandName}`, (/** @type {ChatCommandCallbackData} */ commandData) => {
+  socket.on(`!${commandName}`, (
+    /** @type {ChatCommandCallbackData} */ commandData
+  ) => {
     handleClientCommand(chatCommandCallback(commandData));
   });
 }

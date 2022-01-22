@@ -1,6 +1,6 @@
 const app = require('./app');
-const { createServer } = require("http");
-const { Server } = require("socket.io");
+const { createServer } = require('http');
+const { Server } = require('socket.io');
 const { emitTwitchEventsOnSocket } = require('./tau-socket')
 const { emitChatCommandsOnSocket } = require('./twitch-chat')
 
