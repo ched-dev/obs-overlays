@@ -40,14 +40,63 @@ const chatCommands = [
     })
   },
   {
+    commandName: "commands",
+    allowedRoles: ["any"],
+    chatCommandCallback: (commandData) => ({
+      clientCommand: "sendCommands",
+      args: [commandData]
+    })
+  },
+  {
     commandName: "dark",
     allowedRoles: ["any"],
     shortcuts: ["!s dark"]
   },
   {
+    commandName: "discord",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["join the community and get alerts for live streams in The Discord: https://discord.gg/Z8CqGuJjrb"]
+    })
+  },
+  {
     commandName: "eyes",
     allowedRoles: ["any"],
     shortcuts: ["!s eyes"]
+  },
+  {
+    commandName: "fortune",
+    allowedRoles: ["broadcaster"],
+    chatCommandCallback: (commandData) => ({
+      clientCommand: "clearScreen"
+    })
+  },
+  {
+    commandName: "lurk",
+    allowedRoles: ["any"],
+    chatCommandCallback: ({ chatter }) => ({
+      clientCommand: "sendBotMessage",
+      args: [`/me ${chatter.userName} slowly fades away into the night`]
+    })
+  },
+  {
+    commandName: "meow",
+    allowedRoles: ["any"],
+    shortcuts: ["!s meow"]
+  },
+  {
+    commandName: "nerd",
+    allowedRoles: ["any"],
+    shortcuts: ["!s nerd"]
+  },
+  {
+    commandName: "overlays",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["All our OBS Overlays (follows, subscribe, etc.) and some chat commands (!clap) are controlled with our project https://github.com/ched-dev/obs-overlays which is still a work in progress!"]
+    })
   },
   {
     commandName: "sound",
@@ -66,16 +115,12 @@ const chatCommands = [
     })
   },
   {
-    commandName: "fortune",
-    allowedRoles: ["broadcaster"],
-    chatCommandCallback: (commandData) => ({
-      clientCommand: "clearScreen"
-    })
-  },
-  {
-    commandName: "meow",
+    commandName: "tasks",
     allowedRoles: ["any"],
-    shortcuts: ["!s meow"]
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: [`The Tasks you see on screen are from our project OBS Tasks Overlays. You can set it up on your own stream by only adding a browser source in OBS. Check it out at: https://github.com/ched-dev/obs-tasks-overlay`]
+    })
   },
   {
     commandName: "thinking",

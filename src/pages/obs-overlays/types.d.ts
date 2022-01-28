@@ -47,6 +47,7 @@ export interface ClientCommands {
   playSound: (soundName: string) => void;
   clearScreen: () => void;
   sendBotMessage: (message: string) => void;
+  sendCommands(commandData: ChatCommandCallbackData): void;
   ignore: () => void;
 }
 

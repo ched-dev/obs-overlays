@@ -29,6 +29,7 @@ const clientCommands = {
   renderSoundButtons,
   clearScreen,
   sendBotMessage,
+  sendCommands,
   ignore() {}
 }
 
@@ -175,6 +176,31 @@ function renderSoundButtons() {
  */
 function sendBotMessage(message) {
   socket.emit('sendBotMessage', message);
+}
+
+/**
+ * @param {ChatCommandCallbackData} commandData
+ */
+function sendCommands(commandData) {
+  const { chatter } = commandData
+  const allowedCommands = []
+  config.chatCommands.map(({ commandName, allowedRoles, aliases }) => {
+    
+    if (allowedRoles.includes("any") || allowedRoles.find(role => chatter.roles[role])) {
+      allowedCommands.push(`!${commandName}`)
+      // check aliases too man!
+      if (aliases && aliases.length) {
+        aliases.map(alias => (
+          allowedCommands.push(`!${alias}`)
+        ))
+      }
+    }
+  })
+
+  const commandsString = allowedCommands.join(" ")
+
+  console.log("commandData", commandData)
+  sendBotMessage(`${chatter.userName}, you can run: ${commandsString}`)
 }
 
 // client-side logging
