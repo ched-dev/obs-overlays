@@ -33,6 +33,9 @@ const clientCommands = {
   ignore() {}
 }
 
+/** @type {Record<string,string>} */
+const urlParams = Object.fromEntries(new URLSearchParams(window.location.search).entries());
+// const debugMode = Boolean(urlParams.debugMode)
 /** @type {false | NodeJS.Timeout} */
 let notificationTimeout = false
 /** @type {HTMLElement} */
@@ -42,7 +45,8 @@ soundPlayer.init();
 
 console.log("init client.js", {
   config,
-  clientCommands
+  clientCommands,
+  urlParams
 })
 
 config.eventCommands.map(eventCommand => {
@@ -143,6 +147,11 @@ function clearScreen() {
 }
 
 function playSound(name = config.DEFAULT_NOTIFICATION_SOUND) {
+  if (urlParams.browserMode && config.BROWSER_MODE_DENIED_COMMANDS.includes("playSound")) {
+    console.log("skipping playSound")
+    return
+  }
+
   soundPlayer.play(name);
 }
 
