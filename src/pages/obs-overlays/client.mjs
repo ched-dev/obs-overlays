@@ -59,22 +59,27 @@ config.chatCommands.map(chatCommand => {
 
 // config can be array of config, or single item
 /**
- * @param {ClientCommandResult} config
+ * @param {ClientCommandResult} commandConfig
  */
-function handleClientCommand(config) {
-  if (!config || typeof config !== "object") {
-    console.log("`handleClientCommand()` invalid config:", config);
+function handleClientCommand(commandConfig) {
+  if (!commandConfig || typeof commandConfig !== "object") {
+    console.error("`handleClientCommand()` invalid commandConfig:", commandConfig);
     return;
   }
-  if (Array.isArray(config)) {
-    config.map(handleClientCommand);
+  if (Array.isArray(commandConfig)) {
+    commandConfig.map(handleClientCommand);
     return;
   }
 
-  const clientCommand = clientCommands.hasOwnProperty(config.clientCommand) && clientCommands[config.clientCommand];
+  if (urlParams.browserMode && config.BROWSER_MODE_DENIED_COMMANDS.includes(commandConfig.clientCommand)) {
+    console.log(`// skipping ${commandConfig.clientCommand}`)
+    return
+  }
+
+  const clientCommand = clientCommands.hasOwnProperty(commandConfig.clientCommand) && clientCommands[commandConfig.clientCommand];
 
   if (clientCommand) {
-    clientCommand.apply(undefined, config.args || []);
+    clientCommand.apply(undefined, commandConfig.args || []);
   }
 }
 
@@ -147,11 +152,6 @@ function clearScreen() {
 }
 
 function playSound(name = config.DEFAULT_NOTIFICATION_SOUND) {
-  if (urlParams.browserMode && config.BROWSER_MODE_DENIED_COMMANDS.includes("playSound")) {
-    console.log("skipping playSound")
-    return
-  }
-
   soundPlayer.play(name);
 }
 

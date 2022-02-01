@@ -140,6 +140,11 @@ const chatCommands = [
       args: [`@${chatter.userName}, you're a ...`]
     })
   },
+  {
+    commandName: "yoink",
+    allowedRoles: ["any"],
+    shortcuts: ["!s yoink"]
+  },
 ]
 
 export default chatCommands

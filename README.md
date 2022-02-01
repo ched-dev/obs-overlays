@@ -13,6 +13,18 @@ This local application allows you to display overlays in OBS using a browser sou
 - [x] Prebuilt [Client Commands](./docs/overview.md#client-command) for rendering HTML/CSS templates, playing sounds, sending bot messages, etc.
 - [x] Create custom Client Commands for endless functionality (launching a game, hitting an API)
 
+To Do:
+- [ ] Command Cooldowns
+- [ ] New `showMedia` Client Command
+- [ ] `!so` Shoutout Command
+- [ ] Enhanced Alert Designs
+- [ ] Bits & Badge Alert
+- [ ] Hype Train Alert
+- [ ] Polls and Predictions Alert
+- [ ] Add Queuing to Alerts
+- [ ] Turn off TAU or Chat events
+- [ ] Stream Stats ending screen (# of Raids, Follows, etc.)
+
 ## Documentation
 
 - [Overview](./docs/overview.md#obs-overlays-overview) for a general understanding of how this application works
