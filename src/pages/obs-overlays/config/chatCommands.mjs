@@ -13,6 +13,11 @@
 /** @type {ChatCommand[]} */
 const chatCommands = [
   {
+    commandName: "babysteps",
+    allowedRoles: ["any"],
+    shortcuts: ["!s babysteps"]
+  },
+  {
     commandName: "brb",
     allowedRoles: ["broadcaster"],
     chatCommandCallback: ({ args }) => ({
@@ -28,6 +33,11 @@ const chatCommands = [
     })
   },
   {
+    commandName: "boring",
+    allowedRoles: ["any"],
+    shortcuts: ["!s boring"]
+  },
+  {
     commandName: "clap",
     allowedRoles: ["any"],
     shortcuts: ["!s clap"]
@@ -38,6 +48,11 @@ const chatCommands = [
     chatCommandCallback: () => ({
       clientCommand: "clearScreen"
     })
+  },
+  {
+    commandName: "coin",
+    allowedRoles: ["any"],
+    shortcuts: ["!s coin"]
   },
   {
     commandName: "commands",
@@ -73,6 +88,27 @@ const chatCommands = [
     })
   },
   {
+    commandName: "funny",
+    allowedRoles: ["any"],
+    shortcuts: ["!s funny"]
+  },
+  {
+    commandName: "gigawhat",
+    allowedRoles: ["any"],
+    aliases: ["gigawatt"],
+    shortcuts: ["!s gigawhat"]
+  },
+  {
+    commandName: "hatemylife",
+    allowedRoles: ["broadcaster", "subscriber"],
+    shortcuts: ["!s ihatemylife"]
+  },
+  {
+    commandName: "highaf",
+    allowedRoles: ["any"],
+    shortcuts: ["!s afroman"]
+  },
+  {
     commandName: "lurk",
     allowedRoles: ["any"],
     chatCommandCallback: ({ chatter }) => ({
@@ -86,9 +122,25 @@ const chatCommands = [
     shortcuts: ["!s meow"]
   },
   {
+    commandName: "nailedit",
+    allowedRoles: ["any"],
+    shortcuts: ["!s nailedit"]
+  },
+  {
     commandName: "nerd",
     allowedRoles: ["any"],
     shortcuts: ["!s nerd"]
+  },
+  {
+    commandName: "noah",
+    allowedRoles: ["any"],
+    shortcuts: ["!s noah"]
+  },
+  {
+    commandName: "ok",
+    aliases: ["lazy"],
+    allowedRoles: ["any"],
+    shortcuts: ["!s dontcare"]
   },
   {
     commandName: "overlays",
@@ -145,6 +197,15 @@ const chatCommands = [
     allowedRoles: ["any"],
     shortcuts: ["!s yoink"]
   },
+  {
+    commandName: "youtube",
+    allowedRoles: ["any"],
+    aliases: ["yt"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["i made a URL just for you https://bit.ly/ched_dev-youtube"]
+    })
+  }
 ]
 
 export default chatCommands

@@ -16,6 +16,10 @@ const soundSources = {
     audioSource: 'sounds/air-horn.mp3',
     volume: 0.2
   },
+  'afroman': {
+    audioSource: 'sounds/ched.dev/afroman-because-i-got-high.m4a',
+    volume: 0.4
+  },
   'anotherone': {
     audioSource: 'sounds/dj-khaled-another-one.mp3',
     volume: 1.0
@@ -23,6 +27,10 @@ const soundSources = {
   'applause': {
     audioSource: 'sounds/applause-tv.mp3',
     volume: 0.2
+  },
+  'babysteps': {
+    audioSource: 'sounds/ched.dev/what-about-bob-baby-steps.m4a',
+    volume: 1.0
   },
   'boring': {
     audioSource: 'sounds/simpsons-homer-boring.mp3',
@@ -55,13 +63,33 @@ const soundSources = {
     audioSource: 'sounds/mario-death.mp3',
     volume: 0.2
   },
+  'dontcare': {
+    audioSource: 'sounds/ched.dev/office-space-i-just-dont-care.m4a',
+    volume: 1.0
+  },
   'eyes': {
     audioSource: 'sounds/simpsons-my-eyes-goggles.mp3',
+    volume: 1.0
+  },
+  'funny': {
+    audioSource: 'sounds/ched.dev/bobs-burgers-funny-in-the-wall.m4a',
     volume: 1.0
   },
   'hold': {
     audioSource: 'sounds/elevator-music.mp3',
     volume: 0.4
+  },
+  'hydrate': {
+    audioSource: 'sounds/ched.dev/bttf-hydrate-level-4-please.m4a',
+    volume: 0.8
+  },
+  'ihatemylife': {
+    audioSource: 'sounds/ched.dev/youth-brigade-i-hate-my-life.m4a',
+    volume: 0.4
+  },
+  'gigawhat': {
+    audioSource: 'sounds/ched.dev/bttf-1.21-gigawatts.m4a',
+    volume: 0.8
   },
   'larry': {
     audioSource: 'sounds/larry.mp3',
@@ -74,9 +102,20 @@ const soundSources = {
     audioSource: 'sounds/meow.mp3',
     volume: 0.4
   },
+  'meowmix': {
+    audioSource: 'sounds/ched.dev/dr-evil-meow-mix.m4a',
+    volume: 0.6
+  },
+  'nailedit': {
+    audioSource: 'sounds/ched.dev/wamu-ad-tom-nailed-it.m4a'
+  },
   'nerd': {
     audioSource: 'sounds/simpsons-homer-nerd.m4a',
     volume: 1.0
+  },
+  'noah': {
+    audioSource: 'sounds/ched.dev/howard-stern-maria-menounos-noah.m4a',
+    volume: 0.6
   },
   'repeat': {
     audioSource: 'sounds/simpsons-homer-repeat.mp3',
