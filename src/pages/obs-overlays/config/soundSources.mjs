@@ -41,6 +41,7 @@ const soundSources = {
   },
   'chomp': {
     audioSource: 'sounds/chomp-on-this.mp3',
+    allowedRoles: ['broadcaster'],
     volume: 1.0
   },
   'clap': {
@@ -85,6 +86,7 @@ const soundSources = {
   },
   'ihatemylife': {
     audioSource: 'sounds/ched.dev/youth-brigade-i-hate-my-life.m4a',
+    allowedRoles: ['broadcaster', 'moderator', 'vip', 'subscriber'],
     volume: 0.4
   },
   'gigawhat': {
@@ -93,6 +95,7 @@ const soundSources = {
   },
   'larry': {
     audioSource: 'sounds/larry.mp3',
+    allowedRoles: ['broadcaster', 'moderator', 'vip'],
     volume: 0.3
   },
   'listen': {

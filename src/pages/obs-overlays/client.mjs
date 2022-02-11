@@ -2,6 +2,7 @@
 
 import * as config from "./config/config.mjs"
 import soundPlayer from "./soundPlayer.mjs"
+import { fakeBroadcaster } from "./mock/chatters.mjs"
 
 /**
  * Client Application
@@ -15,6 +16,7 @@ import soundPlayer from "./soundPlayer.mjs"
  * @typedef {import("./types").EventCommand} EventCommand
  * @typedef {import("./types").EventCommandCallbackData} EventCommandCallbackData
  * @typedef {import("./types").ChatCommand} ChatCommand
+ * @typedef {import("./types").ChatCommandChatter} ChatCommandChatter
  * @typedef {import("./types").ChatCommandCallbackData} ChatCommandCallbackData
  * @typedef {import("./types").RenderTemplateData} RenderTemplateData
  */
@@ -27,6 +29,7 @@ const clientCommands = {
   playSound,
   renderTemplate,
   renderSoundButtons,
+  sendSoundNames,
   clearScreen,
   sendBotMessage,
   sendCommands,
@@ -131,7 +134,7 @@ function renderTemplate(templateData) {
   }
 
   canvasEl.innerHTML = html;
-  templateData.sound && playSound(templateData.sound);
+  templateData.sound && playSound(templateData.sound, fakeBroadcaster);
   startNotificationTimeout(templateData.timeout);
 }
 
@@ -151,8 +154,30 @@ function clearScreen() {
   canvasEl.innerHTML = "";
 }
 
-function playSound(name = config.DEFAULT_NOTIFICATION_SOUND) {
-  soundPlayer.play(name);
+/**
+ * Play a sound by name, or send available sounds in chat
+ * @type {ClientCommands["playSound"]}
+ * @param {string} name The name of the sound source
+ * @param {ChatCommandChatter} [chatter] Chatter requesting the sound
+ */
+function playSound(name, chatter) {
+  const hasSound = soundPlayer.get(name, chatter)
+  
+  if (!hasSound && config.SEND_AVAILABLE_SOUNDS_MESSAGE && chatter) {
+    sendSoundNames(chatter)
+  } else {
+    soundPlayer.play(name, chatter)
+  }
+}
+
+/**
+ * Send a bot message with chatters available sounds
+ * @param {ChatCommandChatter} chatter 
+ */
+function sendSoundNames(chatter) {
+  const soundNames = soundPlayer.getAllNames(chatter).join(", ")
+
+  sendBotMessage(`${chatter.userName}, here's a list of valid sounds: ${soundNames}`)
 }
 
 function renderSoundButtons() {
@@ -175,7 +200,7 @@ function renderSoundButtons() {
     /** @type {Partial<HTMLButtonElement>} */
     const htmlEl = e.target;
     if (htmlEl.dataset.soundName) {
-      playSound(htmlEl.dataset.soundName)
+      playSound(htmlEl.dataset.soundName, fakeBroadcaster)
     }
   })
 }

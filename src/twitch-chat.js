@@ -95,7 +95,7 @@ const twitchChat = {
         moderator: Boolean(tags.mod),
         vip: tags.badges?.vip === "1",
         editor: false,
-        subscriber: tags.badges?.subscriber === "1",
+        subscriber: tags.subscriber,
         follower: tags.badges?.follower === "1",
         any: true
       }

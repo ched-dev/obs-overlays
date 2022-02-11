@@ -1,5 +1,7 @@
 // @ts-check
 
+import { fakeBroadcaster } from "../mock/chatters.mjs"
+
 /**
  * Chat Commands Configuration
  * ===
@@ -137,8 +139,8 @@ const chatCommands = [
     shortcuts: ["!s noah"]
   },
   {
-    commandName: "ok",
-    aliases: ["lazy"],
+    commandName: "lazy",
+    aliases: ["ok"],
     allowedRoles: ["any"],
     shortcuts: ["!s dontcare"]
   },
@@ -151,19 +153,25 @@ const chatCommands = [
     })
   },
   {
+    commandName: "rimshot",
+    allowedRoles: ["any"],
+    shortcuts: ["!s rimshot"]
+  },
+  {
     commandName: "sound",
     aliases: ["s"],
     allowedRoles: ["any"],
-    chatCommandCallback: ({ commandName, args }) => ({
+    chatCommandCallback: ({ commandName, args, chatter }) => ({
       clientCommand: "playSound",
-      args,
+      args: [args[0], chatter],
     })
   },
   {
     commandName: "sounds",
     allowedRoles: ["any"],
-    chatCommandCallback: () => ({
-      clientCommand: "renderSoundButtons"
+    chatCommandCallback: ({ chatter }) => ({
+      clientCommand: "sendSoundNames",
+      args: [chatter]
     })
   },
   {
@@ -174,14 +182,17 @@ const chatCommands = [
       args: [`The Tasks you see on screen are from our project OBS Tasks Overlays. You can set it up on your own stream by only adding a browser source in OBS. Check it out at: https://github.com/ched-dev/obs-tasks-overlay`]
     })
   },
-  {
+  { // allowing top level command to call restricted sounds
     commandName: "thinking",
     allowedRoles: ["any"],
-    shortcuts: ["!s larry"]
+    chatCommandCallback: () => ({
+      clientCommand: "playSound",
+      args: ["larry", fakeBroadcaster]
+    })
   },
   {
     commandName: "vip",
-    allowedRoles: ["broadcaster", "vip"],
+    allowedRoles: ["broadcaster", "moderator", "vip"],
     shortcuts: ["!s anotherone"]
   },
   {
@@ -205,7 +216,12 @@ const chatCommands = [
       clientCommand: "sendBotMessage",
       args: ["i made a URL just for you https://bit.ly/ched_dev-youtube"]
     })
-  }
+  },
+  {
+    commandName: "wow",
+    allowedRoles: ["any"],
+    shortcuts: ["!s wow"]
+  },
 ]
 
 export default chatCommands

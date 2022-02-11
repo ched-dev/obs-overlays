@@ -44,7 +44,8 @@ export interface ChatUserFeatures {
 export interface ClientCommands {
   renderTemplate: (templateData: RenderTemplateData) => void;
   renderSoundButtons: () => void;
-  playSound: (soundName: string) => void;
+  sendSoundNames: (chatter: ChatCommandChatter) => void;
+  playSound: (soundName: string, chatter?: ChatCommandChatter) => void;
   clearScreen: () => void;
   sendBotMessage: (message: string) => void;
   sendCommands(commandData: ChatCommandCallbackData): void;
@@ -88,14 +89,16 @@ export interface SoundSource {
   audio?: HTMLAudioElement; // populated on SoundPlayer.init()
   audioSource: string; // "sounds/whatever.mp3"
   volume?: number; // 0 ... 1
+  allowedRoles?: ChatUserRoleNames[];
 }
 
 export interface SoundPlayer {
   initialized: boolean;
   sources: SoundSources;
   init: () => void;
-  get: (name: string) => SoundSource | undefined;
-  play: (name: string) => void;
+  get: (name: string, chatter: ChatCommandChatter) => SoundSource | undefined;
+  getAllNames: (chatter: ChatCommandChatter) => string[];
+  play: (name: string, chatter: ChatCommandChatter) => void;
 }
 
 

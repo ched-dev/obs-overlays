@@ -21,10 +21,45 @@ const soundPlayer = {
     }
     this.initialized = true;
   },
-  get(name) {
-    return this.sources.hasOwnProperty(name) ? this.sources[name] : undefined;
+  get(name, chatter) {
+    if (!this.sources.hasOwnProperty(name)) {
+      return undefined
+    }
+
+    const source = this.sources[name];
+
+    if (!source.allowedRoles) {
+      return source;
+    }
+    else if (source.allowedRoles && chatter) {
+      const allowedToPlay = source.allowedRoles.find(roleName => chatter.roles.hasOwnProperty(roleName) && chatter.roles[roleName] === true)
+
+      if (allowedToPlay) {
+        return source;
+      }
+    }
+
+    return undefined;
   },
-  play(name) {
+  getAllNames(chatter) {
+    const allowedSounds = []
+
+    for (const [soundName, soundSource] of Object.entries(this.sources)) {
+      if (!soundSource.allowedRoles) {
+        allowedSounds.push(soundName);
+      }
+      else if (chatter) {
+        const allowedToPlay = soundSource.allowedRoles.find(roleName => chatter.roles.hasOwnProperty(roleName) && chatter.roles[roleName] === true)
+  
+        if (allowedToPlay) {
+          allowedSounds.push(soundName);
+        }
+      }
+    }
+    
+    return allowedSounds;
+  },
+  play(name, chatter) {
     if (!name) {
       console.log("Sound Player: No sound name provided");
       return;
@@ -33,7 +68,12 @@ const soundPlayer = {
       this.init();
     }
 
-    const soundClip = this.get(name);
+    const soundClip = this.get(name, chatter);
+
+    if (!soundClip) {
+      console.log(`Sound Player: Chatter "${chatter.userName}" does not have access to play sound "${name}"`);
+      return;
+    }
 
     if (soundClip && soundClip.audio) {
       soundClip.audio.volume = soundClip.volume || config.DEFAULT_SOUND_CLIP_VOLUME; // 0-1

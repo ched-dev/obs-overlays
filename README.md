@@ -9,6 +9,7 @@ This local application allows you to display overlays in OBS using a browser sou
 - [x] Connect a [Chat Bot](./docs/overview.md#chat-bot) and send messages in chat
 - [x] Common Sound clips included, or add your own
 - [x] Notification templates built in HTML/CSS
+- [x] Limit access to commands & sounds by role (moderator, vip, follower, subscriber, etc.)
 - [x] Easy customization via configuration based code
 - [x] Prebuilt [Client Commands](./docs/overview.md#client-command) for rendering HTML/CSS templates, playing sounds, sending bot messages, etc.
 - [x] Create custom Client Commands for endless functionality (launching a game, hitting an API)
