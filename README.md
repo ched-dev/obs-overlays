@@ -18,8 +18,6 @@ To Do:
 - [ ] Command Cooldowns
 - [ ] New `showMedia` Client Command
 - [ ] `!so` Shoutout Command
-- [ ] Enhanced Alert Designs
-- [ ] Bits & Badge Alert
 - [ ] Hype Train Alert
 - [ ] Polls and Predictions Alert
 - [ ] Add Queuing to Alerts

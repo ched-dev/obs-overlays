@@ -4,11 +4,11 @@ html {
 
 body {
   background: #222;
-  font-family: sans-serif;
+  font-family: 'PT Mono', monospace;
 }
 
 h2 {
-  font-family: sans-serif;
+  font-family: 'PT Mono', monospace;
 }
 
 #canvas {
@@ -20,10 +20,10 @@ h2 {
 
 .notification-position {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
-  bottom: 1rem;
-  right: 1rem;
+  top: 0.8rem;
+  left: 0.8rem;
+  bottom: 0.8rem;
+  right: 0.8rem;
   display: flex;
 }
 .notification-position.bottom-right {
@@ -32,18 +32,27 @@ h2 {
 }
 
 .message {
-  background: goldenrod;
+  background: #333;
+  border: solid 3px goldenrod;
+  border-radius: 4px;
   color: white;
   padding: 1rem;
+  max-width: 22rem;
 }
 .message h2 {
+  display: inline-block;
+  border: solid 1px #333;
+  border-radius: 2px;
+  background: #333;
   font-size: 1rem;
   text-transform: uppercase;
-  margin-top: 0;
-  margin-bottom: 0.4rem;
+  transform: translateY(-2.8rem) translateX(-0.6rem);
+  padding: 0.4rem 0.8rem;
 }
-.message p {
-  margin-top: 0;
+.message .action {
+  margin-top: -3.2rem;
+}
+.message p:last-child {
   margin-bottom: 0;
 }
 

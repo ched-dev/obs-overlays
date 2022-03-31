@@ -177,7 +177,7 @@ function playSound(name, chatter) {
 function sendSoundNames(chatter) {
   const soundNames = soundPlayer.getAllNames(chatter).join(", ")
 
-  sendBotMessage(`${chatter.userName}, here's a list of valid sounds: ${soundNames}`)
+  sendBotMessage(`@${chatter.userName} - here's a list of valid sounds: ${soundNames}`)
 }
 
 function renderSoundButtons() {
@@ -234,7 +234,7 @@ function sendCommands(commandData) {
   const commandsString = allowedCommands.join(" ")
 
   console.log("commandData", commandData)
-  sendBotMessage(`${chatter.userName}, you can run: ${commandsString}`)
+  sendBotMessage(`@${chatter.userName} - you can run: ${commandsString}`)
 }
 
 // client-side logging

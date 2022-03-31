@@ -21,14 +21,33 @@ const eventCommands = [
     })
   },
   {
+    eventName: "channel-cheer",
+    eventCommandCallback: (eventData) => ([
+      {
+        clientCommand: "renderTemplate",
+        args: [{
+          title: "> New Cheers",
+          userName: eventData.is_anonymous ? "`undefined`" : eventData.user_name,
+          action: `cheered ${eventData.bits} bits`,
+          sound: "wow",
+          template: "user-action-template"
+        }]
+      },
+      {
+        clientCommand: "sendBotMessage",
+        args: [`@${eventData.is_anonymous ? "`undefined`" : eventData.user_name} - thanks for the bits, you da best!`]
+      }
+    ])
+  },
+  {
     eventName: "channel-follow",
     eventCommandCallback: (eventData) => ([
       {
         clientCommand: "renderTemplate",
         args: [{
-          title: "New Follower",
+          title: "> New Follower",
           userName: eventData.user_name,
-          action: "follwed",
+          action: "followed",
           sound: "coin",
           timeout: 7 * 1000,
           template: "user-action-template"
@@ -36,7 +55,7 @@ const eventCommands = [
       },
       {
         clientCommand: "sendBotMessage",
-        args: [`@${eventData.user_login}, thanks for the follow!`]
+        args: [`@${eventData.user_login} - thanks for the follow!`]
       }
     ])
   },
@@ -46,16 +65,16 @@ const eventCommands = [
       {
         clientCommand: "renderTemplate",
         args: [{
-          title: "New Subscriber",
+          title: "> New Subscription",
           userName: eventData.user_name,
           action: "subscribed",
           sound: "wow",
           template: "user-action-template"
         }]
       },
-      eventData.is_gift ? null : {
+      {
         clientCommand: "sendBotMessage",
-        args: [`@${eventData.user_login}, thanks for the subscription - you da best!`]
+        args: [`@${eventData.user_login} - thanks for the subscription, you da best!`]
       }
     ])
   },
@@ -65,9 +84,9 @@ const eventCommands = [
       {
         clientCommand: "renderTemplate",
         args: [{
-          title: "New Subscriber",
+          title: "> New Subscription" + (eventData.cumulative_months ? ` / ${eventData.cumulative_months} months` : ""),
           userName: eventData.user_name,
-          action: "subscribed with the message",
+          action: `subscribed ${eventData.streak_months ? ["on a", eventData.streak_months, "month streak"].join(" ") : ""} with the msg`,
           message: eventData.message.text,
           sound: "wow",
           template: "user-action-with-message-template"
@@ -75,7 +94,7 @@ const eventCommands = [
       },
       {
         clientCommand: "sendBotMessage",
-        args: [`@${eventData.user_login}, thanks for the subscription - you da best!`]
+        args: [`@${eventData.user_login} - thanks for the subscription, you da best!`]
       }
     ])
   },
@@ -84,7 +103,7 @@ const eventCommands = [
     eventCommandCallback: (eventData) => ({
       clientCommand: "renderTemplate",
       args: [{
-        title: "New Redemption",
+        title: "> New Redemption",
         userName: eventData.user_name,
         action: `redeemed ${eventData.reward.title}`,
         sound: eventData.reward.title === "hydrate" ? "hydrate" : "yoink",
@@ -98,7 +117,7 @@ const eventCommands = [
       {
         clientCommand: "renderTemplate",
         args: [{
-          title: "Incoming Raid!",
+          title: "> Incoming Raid",
           userName: eventData.from_broadcaster_user_name,
           action: `raided with ${eventData.viewers} viewers`,
           sound: "chomp",

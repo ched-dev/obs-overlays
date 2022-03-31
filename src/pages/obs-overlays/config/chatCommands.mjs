@@ -74,7 +74,7 @@ const chatCommands = [
     allowedRoles: ["any"],
     chatCommandCallback: () => ({
       clientCommand: "sendBotMessage",
-      args: ["join the community and get alerts for live streams in The Discord: https://discord.gg/Z8CqGuJjrb"]
+      args: ["join the community and get alerts for live streams with  discord chat: https://discord.gg/Z8CqGuJjrb"]
     })
   },
   {
@@ -175,6 +175,15 @@ const chatCommands = [
     })
   },
   {
+    commandName: "start",
+    allowedRoles: ["broadcaster"],
+    shortcuts: [
+      "!task start",
+      "!drop chedde2Chedded",
+      "!discord"
+    ]
+  },
+  {
     commandName: "tasks",
     allowedRoles: ["any"],
     chatCommandCallback: () => ({
@@ -200,7 +209,7 @@ const chatCommands = [
     allowedRoles: ["any"],
     chatCommandCallback: ({ commandName, args, chatter }) => ({
       clientCommand: "sendBotMessage",
-      args: [`@${chatter.userName}, you're a ...`]
+      args: [`@${chatter.userName} - you're a ...`]
     })
   },
   {
@@ -214,7 +223,7 @@ const chatCommands = [
     aliases: ["yt"],
     chatCommandCallback: () => ({
       clientCommand: "sendBotMessage",
-      args: ["i made a URL just for you https://bit.ly/ched_dev-youtube"]
+      args: ["check out YouTube for all past streams https://bit.ly/ched_dev-youtube"]
     })
   },
   {
