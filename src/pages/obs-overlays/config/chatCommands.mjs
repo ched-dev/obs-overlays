@@ -20,19 +20,37 @@ const chatCommands = [
     shortcuts: ["!s babysteps"]
   },
   {
+    commandName: "back",
+    allowedRoles: ["broadcaster"],
+    shortcuts: ["!clear"],
+    chatCommandCallback: () => ([
+      {
+        clientCommand: "sendBotMessage",
+        args: [`!task start`]
+      }
+    ])
+  },
+  {
     commandName: "brb",
     allowedRoles: ["broadcaster"],
-    chatCommandCallback: ({ args }) => ({
-      clientCommand: "renderTemplate",
-      args: [
-        {
-          template: "message-template",
-          message: `BRB ~ ${args.join(" ") || "Feeding the cat"}`,
-          sound: "brb",
-          timeout: false
-        }
-      ],
-    })
+    chatCommandCallback: ({ args }) => ([
+      {
+        clientCommand: "renderTemplate",
+        args: [
+          {
+            template: "message-template",
+            title: "> Notice",
+            message: `BRB, ${args.join(" ") || "Feeding the cat"}`,
+            sound: "brb",
+            timeout: false
+          }
+        ],
+      },
+      {
+        clientCommand: "sendBotMessage",
+        args: [`!task pause`]
+      }
+    ])
   },
   {
     commandName: "boring",
@@ -78,6 +96,21 @@ const chatCommands = [
     })
   },
   {
+    commandName: "end",
+    allowedRoles: ["broadcaster"],
+    shortcuts: ["!discord", "!youtube"],
+    chatCommandCallback: () => ([
+      // {
+      //   clientCommand: "sendBotMessage",
+      //   args: [`!task start`]
+      // },
+      // {
+      //   clientCommand: "sendBotMessage",
+      //   args: [`!drop chedde2Chedded`]
+      // }
+    ])
+  },
+  {
     commandName: "eyes",
     allowedRoles: ["any"],
     shortcuts: ["!s eyes"]
@@ -85,7 +118,7 @@ const chatCommands = [
   {
     commandName: "fortune",
     allowedRoles: ["broadcaster"],
-    chatCommandCallback: (commandData) => ({
+    chatCommandCallback: () => ({
       clientCommand: "clearScreen"
     })
   },
@@ -158,10 +191,15 @@ const chatCommands = [
     shortcuts: ["!s rimshot"]
   },
   {
+    commandName: "rude",
+    allowedRoles: ["any"],
+    shortcuts: ["!s rude"]
+  },
+  {
     commandName: "sound",
     aliases: ["s"],
     allowedRoles: ["any"],
-    chatCommandCallback: ({ commandName, args, chatter }) => ({
+    chatCommandCallback: ({ args, chatter }) => ({
       clientCommand: "playSound",
       args: [args[0], chatter],
     })
@@ -177,11 +215,17 @@ const chatCommands = [
   {
     commandName: "start",
     allowedRoles: ["broadcaster"],
-    shortcuts: [
-      "!task start",
-      "!drop chedde2Chedded",
-      "!discord"
-    ]
+    shortcuts: ["!discord", "!youtube"],
+    chatCommandCallback: () => ([
+      {
+        clientCommand: "sendBotMessage",
+        args: [`!task start`]
+      },
+      {
+        clientCommand: "sendBotMessage",
+        args: [`!drop chedde2Chedded`]
+      }
+    ])
   },
   {
     commandName: "tasks",
@@ -207,7 +251,7 @@ const chatCommands = [
   {
     commandName: "whoami",
     allowedRoles: ["any"],
-    chatCommandCallback: ({ commandName, args, chatter }) => ({
+    chatCommandCallback: ({ chatter }) => ({
       clientCommand: "sendBotMessage",
       args: [`@${chatter.userName} - you're a ...`]
     })

@@ -22,7 +22,7 @@ const socketListeners = {
  */
 const tauSocket = {
   tauSocket: null,
-  tauSocketUrl: `ws://localhost:${env.tau_port}/ws/twitch-events/`,
+  tauSocketUrl: `wss://${env.tau_host}:${env.tau_port}/ws/twitch-events/`,
   init() {
     this.tauSocket = new WebSocket(this.tauSocketUrl);
 

@@ -28,6 +28,10 @@ const soundSources = {
     audioSource: 'sounds/applause-tv.mp3',
     volume: 0.2
   },
+  'art': {
+    audioSource: 'sounds/ched.dev/30-rock-i-dont-understand-your-art.m4a',
+    volume: 1.0
+  },
   'babysteps': {
     audioSource: 'sounds/ched.dev/what-about-bob-baby-steps.m4a',
     volume: 1.0
@@ -38,6 +42,10 @@ const soundSources = {
   'brb': {
     audioSource: 'sounds/elevator-music.mp3',
     volume: 0.4
+  },
+  'cheese': {
+    audioSource: 'sounds/ched.dev/30-rock-working-on-my-night-cheese.m4a',
+    // volume: 1.0
   },
   'chomp': {
     audioSource: 'sounds/chomp-on-this.mp3',
@@ -109,6 +117,10 @@ const soundSources = {
     audioSource: 'sounds/ched.dev/dr-evil-meow-mix.m4a',
     volume: 0.6
   },
+  'miscount': {
+    audioSource: 'sounds/ched.dev/30-rock-miscounted-the-men.m4a',
+    volume: 0.6
+  },
   'nailedit': {
     audioSource: 'sounds/ched.dev/wamu-ad-tom-nailed-it.m4a'
   },
@@ -127,6 +139,10 @@ const soundSources = {
   'rimshot': {
     audioSource: 'sounds/rimshot.mp3',
     volume: 0.4
+  },
+  'rude': {
+    audioSource: 'sounds/ched.dev/30-rock-rude.m4a',
+    // volume: 0.4
   },
   'sad': {
     audioSource: 'sounds/sad.mp3',

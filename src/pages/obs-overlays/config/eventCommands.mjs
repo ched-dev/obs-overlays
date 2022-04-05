@@ -106,7 +106,7 @@ const eventCommands = [
         title: "> New Redemption",
         userName: eventData.user_name,
         action: `redeemed ${eventData.reward.title}`,
-        sound: eventData.reward.title === "hydrate" ? "hydrate" : "yoink",
+        sound: eventData.reward.title === "hydrate level 4 pls" ? "hydrate" : "yoink",
         template: "user-action-template"
       }]
     })
