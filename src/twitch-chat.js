@@ -1,40 +1,38 @@
 // @ts-check
 const env = require('./env');
 const tmi = require('tmi.js');
+const validator = require('validator');
 
 /**
  * @typedef {import("./pages/obs-overlays/types").TwitchChat} TwitchChat
- * @typedef {import("./pages/obs-overlays/types").TwitchChatSocketListenerEvents} TwitchChatSocketListenerEvents
- * @typedef {import("./pages/obs-overlays/types").TwitchChatSocketListenerEventCallback} TwitchChatSocketListenerEventCallback
  * @typedef {import("./pages/obs-overlays/types").EventCommands} EventCommands
  * @typedef {import("./pages/obs-overlays/types").EventCommandCallbackData} EventCommandCallbackData
  * @typedef {import("./pages/obs-overlays/types").Socket} Socket
  * @typedef {import("./pages/obs-overlays/types").ChatUserRoles} ChatUserRoles
  * @typedef {import("./pages/obs-overlays/types").ChatUserFeatures} ChatUserFeatures
  * @typedef {import("./pages/obs-overlays/types").ChatCommandChatter} ChatCommandChatter
+ * @typedef {import("./pages/obs-overlays/types").ChatCommandCallbackData} ChatCommandCallbackData
+ * @typedef {import("./pages/obs-overlays/types").ChatMessageCallbackData} ChatMessageCallbackData
  */
-
-/** @type {TwitchChatSocketListenerEvents} */
-const socketListeners = {
-  // [socket.id]: { [command-name]: commandCallback }
-}
 
 /** @type {TwitchChat} */
 const twitchChat = {
-  initialized: false,
   channelName: null,
   ignoredChatters: [],
   hasIdentity: false,
   client: null, // tmi Client
+  eventNames: {
+    chatMessage: 'chat-message',
+    chatCommand: 'chat-command'
+  },
 
   init(config = {}, commands = []) {
-    if (this.initialized) {
+    if (this.client) {
       return
     }
 
     this.channelName = config.channelName || env.twitch_channel_name
     this.ignoredChatters = config.ignoredChatters || []
-    console.log("this.channelName", this.channelName, env)
 
     const identity = {
       username: env.twitch_bot_user_name,
@@ -52,43 +50,15 @@ const twitchChat = {
     console.log("TMI listening to Twitch Chat...")
 
     this.client.on('message', (channel, tags, message, self) => {
-      const displayName = tags['display-name'];
+      const displayName = tags['display-name'] || tags.username;
       const userName = tags.username;
       const userId = tags['user-id'];
-      if (this.ignoredChatters && this.ignoredChatters.includes(userName)) {
-        return
-      }
-      console.log(`${userName}: ${message}`);
-      console.log({
-        channel,
-        tags,
-        message,
-        self
-      })
-
-      const cleanedMessage = message.trim()
-      const isCommand = cleanedMessage.startsWith("!")
-      
-      // ignore non "!command" messages
-      if (!isCommand) {
+      if (this.ignoredChatters && (this.ignoredChatters.includes(displayName) || this.ignoredChatters.includes(userName))) {
         return
       }
 
-      // message examples:
-      //   !fortune
-      //   !sound yoink
-      //   !s yoink (alias)
-      //   !yoink -> !sound yoink (command alias)
-      const [rawCommand, ...args] = cleanedMessage.slice(1).split(" ")
-      const command = rawCommand.toLowerCase()
-      const commandConfig = commands.find(c => command === c.commandName || (c.aliases && c.aliases.includes(command)))
-
-      // running a command that doesn't exist
-      if (!commandConfig) {
-        console.log("Invalid Command:", message)
-        return
-      }
-
+      const trimmedMessage = message.trim()
+      const isCommand = trimmedMessage.startsWith("!")
       /** @type {ChatUserRoles} */
       const roles = {
         broadcaster: tags.badges?.broadcaster === "1",
@@ -110,7 +80,39 @@ const twitchChat = {
         userName,
         displayName,
         roles,
-        features
+        features,
+        isBot: [userName, displayName].includes(config.botName)
+      }
+      /**
+       * @type {ChatMessageCallbackData}
+       */
+      const chatData = {
+        chatter,
+        message: trimmedMessage,
+        isCommand
+      }
+
+      // emit chat message
+      this.client.emit(this.eventNames.chatMessage, chatData)
+      
+      // ignore non "!command" messages from this point on
+      if (!isCommand) {
+        return
+      }
+
+      // message examples:
+      //   !fortune
+      //   !sound yoink
+      //   !s yoink (alias)
+      //   !yoink -> !sound yoink (command alias)
+      const [rawCommand, ...args] = trimmedMessage.slice(1).split(" ")
+      const command = rawCommand.toLowerCase()
+      const commandConfig = commands.find(c => command === c.commandName || (c.aliases && c.aliases.includes(command)))
+
+      // running a command that doesn't exist
+      if (!commandConfig) {
+        console.log("Ignored Command:", message)
+        return
       }
       
       console.log('command:', {
@@ -142,27 +144,33 @@ const twitchChat = {
         })
       }
 
-      // trigger command
-      for (const [socketId, listeners] of Object.entries(socketListeners)) {
-        if (listeners.hasOwnProperty(command) && typeof listeners[command] === "function") {
-          listeners[command]({
-            channel,
-            commandName: command,
-            args,
-            chatter
-          })
-        }
-      }
-    });
+      /**
+       * @type {ChatCommandCallbackData}
+       */
+      const commandData = {
+        channelName: channel,
+        commandName: command,
+        commandConfig,
+        args,
+        chatter
+      };
 
-    this.initialized = true;
+      // emit chat command
+      this.client.emit(this.eventNames.chatCommand, commandData)
+    });
   },
-  emitChatCommandsOnSocket: (commands, socket, twitchChatConfig) => {
+  onChatMessage(callback) {
+    this.client?.on(this.eventNames.chatMessage, callback);
+  },
+  onChatCommand(callback) {
+    this.client?.on(this.eventNames.chatCommand, callback);
+  },
+  emitChatCommandsOnSocket: (commands, clientSocket, twitchChatConfig) => {
     // start listening for Twitch Chat messages now
     twitchChat.init(twitchChatConfig, commands);
 
     // listen for sending chat bot messages
-    socket.on('sendBotMessage', (/** @type {string} **/ message) => {
+    clientSocket.on('sendBotMessage', (/** @type {string} **/ message) => {
       console.log("sendBotMessage received:", {
         message
       })
@@ -171,29 +179,25 @@ const twitchChat = {
       })
     })
 
-    const commandsWithSocket = {}
-
-    commands.map(({ commandName, aliases }) => {
-      console.log(socket.id, "listening for chatCommand:", `!${commandName}`);
-
-      /** @type {TwitchChatSocketListenerEventCallback} */
-      const commandEmitter = (commandData) => {
-        socket.emit(`!${commandName}`, commandData);
-        console.log(`${socket.id} received chatCommand:`, `!${commandName}`, commandData);
-      }
-
-      commandsWithSocket[commandName] = commandEmitter
-
-      // redirect aliases
-      if (aliases && aliases.length) {
-        aliases.forEach(commandAlias => {
-          console.log(socket.id, "listening for chatCommand:", `!${commandAlias} -> !${commandName}`);
-          commandsWithSocket[commandAlias] = commandEmitter
+    // listen to chats
+    twitchChat.onChatMessage(({ chatter, message, isCommand }) => {
+      console.log("Event: onChatMessage", {
+        chatter, message, isCommand
+      })
+      // render in client chat
+      if (!isCommand && !message.startsWith("@")) {
+        clientSocket.emit('twitch-chat', {
+          chatter,
+          message: validator.escape(message)
         })
       }
     })
 
-    socketListeners[socket.id] = commandsWithSocket
+    // listen for chat commands
+    twitchChat.onChatCommand((commandData) => {
+      console.log("Event: onChatCommand", commandData)
+      clientSocket.emit(`!${commandData.commandConfig.commandName}`, commandData)
+    })
   }
 };
 

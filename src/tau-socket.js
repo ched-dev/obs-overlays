@@ -17,13 +17,18 @@ const socketListeners = {
   // [socket.id]: { [event-name]: eventCallback }
 }
 
+function getTime() {
+  return new Date().toTimeString()
+}
+
 /**
  * @type {TauSocket}
  */
 const tauSocket = {
   tauSocket: null,
-  tauSocketUrl: `wss://${env.tau_host}:${env.tau_port}/ws/twitch-events/`,
+  tauSocketUrl: `${env.tau_host === "localhost" ? "ws" : "wss"}://${env.tau_host}:${env.tau_port}/ws/twitch-events/`,
   init() {
+    console.log("TAU Socket Connecting:", this.tauSocketUrl)
     this.tauSocket = new WebSocket(this.tauSocketUrl);
 
     this.tauSocket.on('open', () => {
@@ -38,10 +43,24 @@ const tauSocket = {
     
       console.log("TAU Connected and listening for events...");
     });
+
+    this.tauSocket.on('ping', () => {
+      console.log("PING TAU Socket:", getTime())
+    });
+
+    this.tauSocket.on('pong', () => {
+      console.log("PONG TAU Socket:", getTime())
+    });
+
+    this.tauSocket.on('close', () => {
+      console.log("WARN TAU Socket Closed:", getTime(), `\n`, Array.from(arguments))
+      this.tauSocket.terminate()
+      this.init()
+    });
     
     this.tauSocket.on('message', (/** @type {string} **/ data) => {
       const eventData = JSON.parse(data);
-      console.log('--- message', eventData);
+      console.log('---> TAU message', eventData);
     
       const eventType = eventData.event_type; // channel-follow
     
@@ -56,6 +75,7 @@ const tauSocket = {
     /** @type {TauSocketListenerEvents} */
     const eventsWithSocket = {}
 
+    // create emitters for each eventName
     eventCommands.map(({ eventName }) => {
       console.log(socket.id, "listening for eventCommand:", eventName);
       
@@ -70,6 +90,15 @@ const tauSocket = {
       }
 
       eventsWithSocket[eventName] = commandEmitter
+    })
+
+    // clear client socket listeners on disconnect
+    socket.on("disconnect", () => {
+      console.log("Client Socket disconnected:", socket.id)
+
+      if (socketListeners.hasOwnProperty(socket.id)) {
+        delete socketListeners[socket.id]
+      }
     })
 
     socketListeners[socket.id] = eventsWithSocket

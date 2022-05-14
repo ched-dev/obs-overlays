@@ -11,33 +11,41 @@
 </head>
 
 <body>
-  <div id="canvas"></div>
+  <div id="canvas">
+    <div id="notification-app" class="app-layer inset bottom-right">
+      <!-- notification contents -->
+    </div>
+    
+    <div id="chat-app" class="app-layer inset bottom-center">
+      <!-- chat contents -->
+    </div>
+  </div>
 
   <script id="message-template" type="text/template">
-    <div class="notification-position bottom-right">
-      <div class="message">
-        <h2>{title}</h2>
-        <p class="action">{message}</p>
-      </div>
+    <div class="message">
+      <h2>{title}</h2>
+      <p class="action">{message}</p>
     </div>
   </script>
 
   <script id="user-action-template" type="text/template">
-    <div class="notification-position bottom-right">
-      <div class="message">
-        <h2>{title}</h2>
-        <p class="action">{userName} just {action}!</p>
-      </div>
+    <div class="message">
+      <h2>{title}</h2>
+      <p class="action">{userName} just {action}!</p>
     </div>
   </script>
 
   <script id="user-action-with-message-template" type="text/template">
-    <div class="notification-position bottom-right">
-      <div class="message">
-        <h2>{title}</h2>
-        <p class="action">{userName} just {action}:</p>
-        <p>&gt; {message}</p>
-      </div>
+    <div class="message">
+      <h2>{title}</h2>
+      <p class="action">{userName} just {action}:</p>
+      <p>&gt; {message}</p>
+    </div>
+  </script>
+
+  <script id="chat-app-message" type="text/template">
+    <div class="chat-message">
+      <!-- chat message generated in chat/chat-app.mjs -->
     </div>
   </script>
 

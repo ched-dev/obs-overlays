@@ -2,6 +2,7 @@
 
 import * as config from "./config/config.mjs"
 import soundPlayer from "./soundPlayer.mjs"
+import chatApp from "./chat/chat-app.mjs"
 import { fakeBroadcaster } from "./mock/chatters.mjs"
 
 /**
@@ -42,7 +43,7 @@ const urlParams = Object.fromEntries(new URLSearchParams(window.location.search)
 /** @type {false | NodeJS.Timeout} */
 let notificationTimeout = false
 /** @type {HTMLElement} */
-const canvasEl = document.querySelector("#canvas")
+const canvasEl = document.querySelector("#notification-app")
 const socket = window.io();
 soundPlayer.init();
 
@@ -237,6 +238,17 @@ function sendCommands(commandData) {
   sendBotMessage(`@${chatter.userName} - you can run: ${commandsString}`)
 }
 
+function renderChat() {
+  chatApp.init();
+  chatApp.render();
+
+  socket.on("twitch-chat", (chat) => {
+    chatApp.render(chat);
+  });
+}
+
+renderChat();
+
 // client-side logging
 socket.on("connect", () => {
   console.log("Socket.io Connected:", socket.id);
@@ -245,3 +257,10 @@ socket.on("connect", () => {
 socket.on("disconnect", () => {
   console.log("Socket.io Disconnected:", socket.id);
 });
+
+// disconnect when refreshing
+window.addEventListener("onbeforeunload", () => {
+  if (socket && socket.connected) {
+    socket.disconnect()
+  }
+})

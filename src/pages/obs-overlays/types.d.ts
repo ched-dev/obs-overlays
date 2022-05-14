@@ -1,4 +1,17 @@
 /**
+ * ChatApp
+ */
+export interface ChatApp {
+  initialized: boolean;
+  id: "chat-app";
+  chats: ChatMessageCallbackData[];
+  template: string;
+  $el: HTMLElement;
+  init: () => void;
+  render: (chat?: ChatMessageCallbackData) => void;
+}
+
+/**
  * ChatCommands
  */
 export type ChatCommands = ChatCommand[];
@@ -19,11 +32,20 @@ export interface ChatUserRoles {
   subscriber: boolean;
   any: boolean;
 }
+export type ChatMessageCallback = (chatData: ChatMessageCallbackData) => ClientCommandResult;
+export type ChatMessageCallbackEmitter = (callback: ChatMessageCallback) => void;
+export interface ChatMessageCallbackData {
+  chatter: ChatCommandChatter;
+  message: string;
+  isCommand: boolean;
+}
 export type ChatCommandCallback = (commandData: ChatCommandCallbackData) => ClientCommandResult;
+export type ChatCommandCallbackEmitter = (callback: ChatCommandCallback) => void;
 export interface ChatCommandCallbackData {
   channelName: string; // #ched_dev
   chatter: ChatCommandChatter;
   commandName: ChatCommand["commandName"];
+  commandConfig: ChatCommand;
   args: any[];
 }
 export interface ChatCommandChatter {
@@ -32,6 +54,7 @@ export interface ChatCommandChatter {
   userName: string;
   roles: ChatUserRoles;
   features: ChatUserFeatures;
+  isBot: boolean;
 }
 export interface ChatUserFeatures {
   firstMessage: boolean;
@@ -114,6 +137,7 @@ export interface TauSocket {
 interface TauWebSocket {
   on: (eventName: string, callback: function) => void;
   send: (eventName: string, data: any) => void;
+  terminate: () => void;
 }
 export interface TauSocketListenerEvents {
   [key: EventCommandNames]: TauSocketListenerEventCallback
@@ -127,17 +151,23 @@ export interface TauSocketListeners {
  * TwitchChat
  */
 export interface TwitchChat {
-  initialized: boolean;
   channelName: string; // ched_dev
   ignoredChatters: TwitchChatConfig["ignoredChatters"]; // ched_dev
   hasIdentity: boolean;
   client: TmiClient;
+  eventNames: {
+    chatMessage: "chat-message",
+    chatCommand: "chat-command"
+  },
   init: (config: TwitchChatConfig, commands: ChatCommands) => void;
+  onChatMessage: ChatMessageCallbackEmitter;
+  onChatCommand: ChatCommandCallbackEmitter;
   emitChatCommandsOnSocket: (commands: ChatCommands, socket: Socket, twitchChatConfig: TwitchChatConfig) => void;
 }
 interface TwitchChatConfig {
   channelName?: string; // "ched_dev"
   ignoredChatters?: string[]; // ["ched_dev"]
+  botName?: string; // "cheds_bot"
 }
 interface TmiClient {
   connect: () => void;
@@ -159,8 +189,10 @@ export interface TwitchChatSocketListeners {
  */
 interface Socket {
   id: string;
+  connected: boolean;
   on: (eventName: string, callback: function) => void;
   emit: (eventName: string, data: any) => void;
+  disconnect: () => void;
 }
 
 

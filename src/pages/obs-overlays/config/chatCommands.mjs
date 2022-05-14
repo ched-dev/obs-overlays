@@ -31,6 +31,16 @@ const chatCommands = [
     ])
   },
   {
+    commandName: "books",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ([
+      {
+        clientCommand: "sendBotMessage",
+        args: [`check out the books we've built assessments for: https://ched.dev/books`]
+      }
+    ])
+  },
+  {
     commandName: "brb",
     allowedRoles: ["broadcaster"],
     chatCommandCallback: ({ args }) => ([
@@ -70,6 +80,17 @@ const chatCommands = [
     })
   },
   {
+    commandName: "codekatas",
+    allowedRoles: ["any"],
+    aliases: ["katas"],
+    chatCommandCallback: () => ([
+      {
+        clientCommand: "sendBotMessage",
+        args: [`a list of our favorite code katas: https://gist.github.com/ched-dev/28f48a3044e7ca14ba294c7732033dee`]
+      }
+    ])
+  },
+  {
     commandName: "coin",
     allowedRoles: ["any"],
     shortcuts: ["!s coin"]
@@ -96,9 +117,14 @@ const chatCommands = [
     })
   },
   {
+    commandName: "drop",
+    allowedRoles: ["any"],
+    shortcuts: ["!s womp"]
+  },
+  {
     commandName: "end",
     allowedRoles: ["broadcaster"],
-    shortcuts: ["!discord", "!youtube"],
+    shortcuts: ["!socials"],
     chatCommandCallback: () => ([
       // {
       //   clientCommand: "sendBotMessage",
@@ -132,6 +158,14 @@ const chatCommands = [
     allowedRoles: ["any"],
     aliases: ["gigawatt"],
     shortcuts: ["!s gigawhat"]
+  },
+  {
+    commandName: "github",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["steal my code from me: https://github.com/ched-dev"]
+    })
   },
   {
     commandName: "hatemylife",
@@ -196,6 +230,11 @@ const chatCommands = [
     shortcuts: ["!s rude"]
   },
   {
+    commandName: "socials",
+    allowedRoles: ["any"],
+    shortcuts: ["!discord", "!youtube", "!github", "!twitter"]
+  },
+  {
     commandName: "sound",
     aliases: ["s"],
     allowedRoles: ["any"],
@@ -215,16 +254,16 @@ const chatCommands = [
   {
     commandName: "start",
     allowedRoles: ["broadcaster"],
-    shortcuts: ["!discord", "!youtube"],
+    shortcuts: ["!socials"],
     chatCommandCallback: () => ([
       {
         clientCommand: "sendBotMessage",
         args: [`!task start`]
       },
-      {
-        clientCommand: "sendBotMessage",
-        args: [`!drop chedde2Chedded`]
-      }
+      // {
+      //   clientCommand: "sendBotMessage",
+      //   args: [`!drop chedde2Chedded`]
+      // }
     ])
   },
   {
@@ -241,6 +280,14 @@ const chatCommands = [
     chatCommandCallback: () => ({
       clientCommand: "playSound",
       args: ["larry", fakeBroadcaster]
+    })
+  },
+  {
+    commandName: "twitter",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: [`you tweet? i tweet: https://twitter.com/ched_dev`]
     })
   },
   {
@@ -267,7 +314,15 @@ const chatCommands = [
     aliases: ["yt"],
     chatCommandCallback: () => ({
       clientCommand: "sendBotMessage",
-      args: ["check out YouTube for all past streams https://bit.ly/ched_dev-youtube"]
+      args: ["check out YouTube for all past streams: https://bit.ly/ched_dev-youtube"]
+    })
+  },
+  {
+    commandName: "wishlist",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["I put together a wishlist of books I would like to review for you: https://www.amazon.com/gp/registry/wishlist/2ZXBNOATQA89A/ref=pdp_new_wl"]
     })
   },
   {

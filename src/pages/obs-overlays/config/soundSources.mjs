@@ -45,7 +45,6 @@ const soundSources = {
   },
   'cheese': {
     audioSource: 'sounds/ched.dev/30-rock-working-on-my-night-cheese.m4a',
-    // volume: 1.0
   },
   'chomp': {
     audioSource: 'sounds/chomp-on-this.mp3',
@@ -142,7 +141,6 @@ const soundSources = {
   },
   'rude': {
     audioSource: 'sounds/ched.dev/30-rock-rude.m4a',
-    // volume: 0.4
   },
   'sad': {
     audioSource: 'sounds/sad.mp3',

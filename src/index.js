@@ -10,7 +10,7 @@ const io = new Server(httpServer);
 
 // socket.io connection used to send events to client
 io.on("connection", async (socket) => {
-  console.log("Socket.io Client Connected", socket.id)
+  console.log("Client Socket connection:", socket.id)
 
   // import is an esmodule thing
   const obsOverlaysConfig = await import('./pages/obs-overlays/config/config.mjs');

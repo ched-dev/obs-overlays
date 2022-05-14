@@ -86,10 +86,10 @@ const eventCommands = [
         args: [{
           title: "> New Subscription" + (eventData.cumulative_months ? ` / ${eventData.cumulative_months} months` : ""),
           userName: eventData.user_name,
-          action: `subscribed ${eventData.streak_months ? ["on a", eventData.streak_months, "month streak"].join(" ") : ""} with the msg`,
-          message: eventData.message.text,
+          action: `subscribed${eventData.streak_months ? [" on a", eventData.streak_months, "month streak"].join(" ") : ""}${eventData.message.text ? " with the msg" : ""}`,
+          message: eventData.message.text || undefined,
           sound: "wow",
-          template: "user-action-with-message-template"
+          template: eventData.message.text ? "user-action-with-message-template" : "user-action-template"
         }]
       },
       {
