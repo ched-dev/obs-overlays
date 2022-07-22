@@ -74,3 +74,6 @@ typings/
 
 # IntelliJ
 .idea
+
+# ched.dev specific
+ched-dev-sources.mjs

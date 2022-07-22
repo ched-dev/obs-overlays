@@ -29,8 +29,9 @@ const eventCommands = [
           title: "> New Cheers",
           userName: eventData.is_anonymous ? "`undefined`" : eventData.user_name,
           action: `cheered ${eventData.bits} bits`,
-          sound: "wow",
-          template: "user-action-template"
+          message: eventData.message || undefined,
+          sound: "clap",
+          template: eventData.message ? "user-action-with-message-template" : "user-action-template"
         }]
       },
       {
@@ -61,7 +62,23 @@ const eventCommands = [
   },
   {
     eventName: "channel-subscribe",
-    eventCommandCallback: (eventData) => ([
+    eventCommandCallback: (eventData) => (eventData.is_gift ? [
+      {
+        clientCommand: "renderTemplate",
+        args: [{
+          title: "> Gifted Subscription",
+          userName: eventData.user_name,
+          action: "subscribed",
+          sound: "wow",
+          template: "user-action-template",
+          timeout: 4 * 1000 // shorter gift sub timeouts
+        }]
+      },
+      // {
+      //   clientCommand: "sendBotMessage",
+      //   args: [`@${eventData.user_login} - congrats on the gift subscription!`]
+      // }
+    ] : [
       {
         clientCommand: "renderTemplate",
         args: [{
@@ -99,6 +116,29 @@ const eventCommands = [
     ])
   },
   {
+    eventName: "channel-subscription-gift",
+    eventCommandCallback: (eventData) => ([
+      {
+        clientCommand: "renderTemplate",
+        args: [{
+          title: "> Gifted Subscriptions",
+          userName: eventData.user_name || `undefined`,
+          action: `gifted ${eventData.total} sub${eventData.total > 1 ? 's' : ''}${eventData.cumulative_total > eventData.total ? [', they\'ve gifted', eventData.cumulative_total, 'total'].join(' ') : ''}`,
+          sound: "wow",
+          template: "user-action-template"
+        }]
+      },
+      {
+        clientCommand: "playSound",
+        args: ["gift"]
+      },
+      {
+        clientCommand: "sendBotMessage",
+        args: [`@${eventData.user_login || `undefined`} - thanks for the gift subscription${eventData.total > 1 ? 's' : ''}, you da best!`]
+      }
+    ])
+  },
+  {
     eventName: "channel-channel_points_custom_reward_redemption-add",
     eventCommandCallback: (eventData) => ({
       clientCommand: "renderTemplate",
@@ -106,7 +146,7 @@ const eventCommands = [
         title: "> New Redemption",
         userName: eventData.user_name,
         action: `redeemed ${eventData.reward.title}`,
-        sound: eventData.reward.title === "hydrate level 4 pls" ? "hydrate" : "yoink",
+        sound: eventData.reward.title.includes("hydrate") ? "hydrate" : "yoink",
         template: "user-action-template"
       }]
     })

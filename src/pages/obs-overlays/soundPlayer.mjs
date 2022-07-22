@@ -17,7 +17,7 @@ const soundPlayer = {
   // the user must interact with the page before audio can play
   init() {
     for (const [soundName, soundClip] of Object.entries(this.sources)) {
-      soundClip.audio = new Audio('./' + soundClip.audioSource)
+      soundClip.audio = new Audio(soundClip.audioSource)
     }
     this.initialized = true;
   },
@@ -70,7 +70,7 @@ const soundPlayer = {
 
     const soundClip = this.get(name, chatter);
 
-    if (!soundClip) {
+    if (!soundClip && chatter) {
       console.log(`Sound Player: Chatter "${chatter.userName}" does not have access to play sound "${name}"`);
       return;
     }

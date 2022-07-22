@@ -32,6 +32,7 @@ const clientCommands = {
   renderSoundButtons,
   sendSoundNames,
   clearScreen,
+  clearNotification,
   sendBotMessage,
   sendCommands,
   ignore() {}
@@ -43,9 +44,12 @@ const urlParams = Object.fromEntries(new URLSearchParams(window.location.search)
 /** @type {false | NodeJS.Timeout} */
 let notificationTimeout = false
 /** @type {HTMLElement} */
-const canvasEl = document.querySelector("#notification-app")
+const canvasEl = document.querySelector("#notification-app") || document.createElement("div")
 const socket = window.io();
 soundPlayer.init();
+
+/** @type {{ notifier: () => void, timeout: number }[]} */
+const notificationQueue = []
 
 console.log("init client.js", {
   config,
@@ -129,30 +133,53 @@ function renderTemplate(templateData) {
   }
 
   // get template and render
-  let html = templateEl.textContent;
+  let html = templateEl.textContent || "";
   for (const [propName, value] of Object.entries(templateData || {})) {
     html = html.replace(`{${propName}}`, value);
   }
 
-  canvasEl.innerHTML = html;
-  templateData.sound && playSound(templateData.sound, fakeBroadcaster);
-  startNotificationTimeout(templateData.timeout);
+  sendToNotificationQueue(() => {
+    canvasEl.innerHTML = html;
+    templateData.sound && playSound(templateData.sound, fakeBroadcaster);
+  }, templateData.timeout)
 }
 
-function startNotificationTimeout(timeout = config.NOTIFICATION_AUTO_CLOSE_TIMEOUT) {
-  if (notificationTimeout !== false) {
-    clearTimeout(notificationTimeout)
-    notificationTimeout = false
+function sendToNotificationQueue(notifier, timeout = config.NOTIFICATION_AUTO_CLOSE_TIMEOUT) {
+  notificationQueue.push({
+    notifier,
+    timeout
+  })
+  // run immediately if it's the only item
+  if (notificationQueue.length === 1) {
+    runNextNotification()
   }
+}
 
-  // 0 or false will not run
-  if (!timeout) return
+function runNextNotification() {
+  if (notificationQueue.length > 0) {
+    const nextNotification = notificationQueue[0]
+    nextNotification.notifier()
+    // only run timeout if !0 or !false
+    if (Boolean(nextNotification.timeout)) {
+      setTimeout(() => {
+        clearNotification()
+        runNextNotification()
+      }, nextNotification.timeout)
+    }
+  }
+  else {
+    clearNotification()
+  } 
+}
 
-  notificationTimeout = setTimeout(() => clearScreen(), timeout)
+function clearNotification() {
+  canvasEl.innerHTML = "";
+  notificationQueue.shift()
 }
 
 function clearScreen() {
-  canvasEl.innerHTML = "";
+  clearNotification()
+  runNextNotification()
 }
 
 /**
@@ -199,8 +226,8 @@ function renderSoundButtons() {
   `
   canvasEl.addEventListener('click', (e) => {
     /** @type {Partial<HTMLButtonElement>} */
-    const htmlEl = e.target;
-    if (htmlEl.dataset.soundName) {
+    const htmlEl = e.target || document.createElement('div')
+    if (htmlEl.dataset && htmlEl.dataset.soundName) {
       playSound(htmlEl.dataset.soundName, fakeBroadcaster)
     }
   })
@@ -219,8 +246,7 @@ function sendBotMessage(message) {
 function sendCommands(commandData) {
   const { chatter } = commandData
   const allowedCommands = []
-  config.chatCommands.map(({ commandName, allowedRoles, aliases }) => {
-    
+  config.chatCommands.map(({ commandName, allowedRoles = [], aliases }) => {
     if (allowedRoles.includes("any") || allowedRoles.find(role => chatter.roles[role])) {
       allowedCommands.push(`!${commandName}`)
       // check aliases too man!

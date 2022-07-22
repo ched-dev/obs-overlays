@@ -68,6 +68,12 @@ const chatCommands = [
     shortcuts: ["!s boring"]
   },
   {
+    commandName: "bullshit",
+    allowedRoles: ["any"],
+    aliases: ["bs"],
+    shortcuts: ["!s bullshit"]
+  },
+  {
     commandName: "clap",
     allowedRoles: ["any"],
     shortcuts: ["!s clap"]
@@ -120,6 +126,11 @@ const chatCommands = [
     commandName: "drop",
     allowedRoles: ["any"],
     shortcuts: ["!s womp"]
+  },
+  {
+    commandName: "dumb",
+    allowedRoles: ["any"],
+    shortcuts: ["!s dumb"]
   },
   {
     commandName: "end",
@@ -252,6 +263,11 @@ const chatCommands = [
     })
   },
   {
+    commandName: "spread",
+    allowedRoles: ["any"],
+    shortcuts: ["!s spreadit"]
+  },
+  {
     commandName: "start",
     allowedRoles: ["broadcaster"],
     shortcuts: ["!socials"],
@@ -283,6 +299,11 @@ const chatCommands = [
     })
   },
   {
+    commandName: "time",
+    allowedRoles: ["any"],
+    shortcuts: ["!s time"]
+  },
+  {
     commandName: "twitter",
     allowedRoles: ["any"],
     chatCommandCallback: () => ({
@@ -304,6 +325,16 @@ const chatCommands = [
     })
   },
   {
+    commandName: "wtf",
+    allowedRoles: ["any"],
+    shortcuts: ["!s pcloadletter"]
+  },
+  {
+    commandName: "yeahsure",
+    allowedRoles: ["any"],
+    shortcuts: ["!s yeahsure"]
+  },
+  {
     commandName: "yoink",
     allowedRoles: ["any"],
     shortcuts: ["!s yoink"]
@@ -317,14 +348,14 @@ const chatCommands = [
       args: ["check out YouTube for all past streams: https://bit.ly/ched_dev-youtube"]
     })
   },
-  {
-    commandName: "wishlist",
-    allowedRoles: ["any"],
-    chatCommandCallback: () => ({
-      clientCommand: "sendBotMessage",
-      args: ["I put together a wishlist of books I would like to review for you: https://www.amazon.com/gp/registry/wishlist/2ZXBNOATQA89A/ref=pdp_new_wl"]
-    })
-  },
+  // {
+  //   commandName: "wishlist",
+  //   allowedRoles: ["any"],
+  //   chatCommandCallback: () => ({
+  //     clientCommand: "sendBotMessage",
+  //     args: ["I put together a wishlist of books I would like to review for you: https://www.amazon.com/gp/registry/wishlist/2ZXBNOATQA89A/ref=pdp_new_wl"]
+  //   })
+  // },
   {
     commandName: "wow",
     allowedRoles: ["any"],

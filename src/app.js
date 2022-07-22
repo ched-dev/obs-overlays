@@ -21,6 +21,10 @@ app.get('/', (req, res) => {
   })
 });
 
+app.use((req, res, next) => {
+  res.setHeader('Content-Security-Policy', `default-src 'self' *.amazonaws.com`)
+  return next()
+})
 app.use('/obs-overlays', express.static(path.join(__dirname, './pages/obs-overlays')))
 
 app.use('/api/v1', api);

@@ -70,6 +70,7 @@ export interface ClientCommands {
   sendSoundNames: (chatter: ChatCommandChatter) => void;
   playSound: (soundName: string, chatter?: ChatCommandChatter) => void;
   clearScreen: () => void;
+  clearNotification: () => void;
   sendBotMessage: (message: string) => void;
   sendCommands(commandData: ChatCommandCallbackData): void;
   ignore: () => void;
@@ -119,9 +120,9 @@ export interface SoundPlayer {
   initialized: boolean;
   sources: SoundSources;
   init: () => void;
-  get: (name: string, chatter: ChatCommandChatter) => SoundSource | undefined;
+  get: (name: string, chatter: ChatCommandChatter | undefined) => SoundSource | undefined;
   getAllNames: (chatter: ChatCommandChatter) => string[];
-  play: (name: string, chatter: ChatCommandChatter) => void;
+  play: (name: string, chatter: ChatCommandChatter | undefined) => void;
 }
 
 
