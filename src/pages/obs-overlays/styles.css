@@ -49,7 +49,7 @@ h2 {
   border-radius: 4px;
   color: white;
   padding: 1rem;
-  max-width: 22rem;
+  width: 22rem;
 }
 .message h2 {
   display: inline-block;
@@ -98,9 +98,11 @@ h2 {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-end;
+  align-self: flex-start;
+  margin-left: 18.6rem;
   position: relative;
-  width: 42vw;
-  height: 6rem;
+  width: 50vw;
+  height: 6.2rem;
   overflow: hidden;
 }
 .chat-title {

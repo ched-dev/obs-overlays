@@ -115,14 +115,6 @@ const chatCommands = [
     shortcuts: ["!s dark"]
   },
   {
-    commandName: "discord",
-    allowedRoles: ["any"],
-    chatCommandCallback: () => ({
-      clientCommand: "sendBotMessage",
-      args: ["join the community and get alerts for live streams with  discord chat: https://discord.gg/Z8CqGuJjrb"]
-    })
-  },
-  {
     commandName: "drop",
     allowedRoles: ["any"],
     shortcuts: ["!s womp"]
@@ -175,7 +167,7 @@ const chatCommands = [
     allowedRoles: ["any"],
     chatCommandCallback: () => ({
       clientCommand: "sendBotMessage",
-      args: ["steal my code from me: https://github.com/ched-dev"]
+      args: ["steal my code: https://github.com/ched-dev"]
     })
   },
   {
@@ -187,6 +179,11 @@ const chatCommands = [
     commandName: "highaf",
     allowedRoles: ["any"],
     shortcuts: ["!s afroman"]
+  },
+  {
+    commandName: "hydrate",
+    allowedRoles: ["any"],
+    shortcuts: ["!s hydrate"]
   },
   {
     commandName: "lurk",
@@ -231,6 +228,14 @@ const chatCommands = [
     })
   },
   {
+    commandName: "project",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["Our new project is a Redwood JS App version of our Amazon Product Price scanner. It's getting close to user beta, but you can view it now at https://unboxed.deals"]
+    })
+  },
+  {
     commandName: "rimshot",
     allowedRoles: ["any"],
     shortcuts: ["!s rimshot"]
@@ -243,7 +248,7 @@ const chatCommands = [
   {
     commandName: "socials",
     allowedRoles: ["any"],
-    shortcuts: ["!discord", "!youtube", "!github", "!twitter"]
+    shortcuts: ["!youtube", "!github", "!twitter"]
   },
   {
     commandName: "sound",
