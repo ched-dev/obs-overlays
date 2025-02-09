@@ -1,5 +1,4 @@
 // @ts-check
-
 import { fakeBroadcaster } from "../mock/chatters.mjs"
 
 /**
@@ -14,6 +13,11 @@ import { fakeBroadcaster } from "../mock/chatters.mjs"
 
 /** @type {ChatCommand[]} */
 const chatCommands = [
+  {
+    commandName: "art",
+    allowedRoles: ["any"],
+    shortcuts: ["!s art"]
+  },
   {
     commandName: "babysteps",
     allowedRoles: ["any"],
@@ -30,16 +34,16 @@ const chatCommands = [
       }
     ])
   },
-  {
-    commandName: "books",
-    allowedRoles: ["any"],
-    chatCommandCallback: () => ([
-      {
-        clientCommand: "sendBotMessage",
-        args: [`check out the books we've built assessments for: https://ched.dev/books`]
-      }
-    ])
-  },
+  // {
+  //   commandName: "books",
+  //   allowedRoles: ["any"],
+  //   chatCommandCallback: () => ([
+  //     {
+  //       clientCommand: "sendBotMessage",
+  //       args: [`check out the books we've built assessments for: https://ched.dev/books`]
+  //     }
+  //   ])
+  // },
   {
     commandName: "brb",
     allowedRoles: ["broadcaster"],
@@ -75,6 +79,7 @@ const chatCommands = [
   },
   {
     commandName: "clap",
+    aliases: ["applause"],
     allowedRoles: ["any"],
     shortcuts: ["!s clap"]
   },
@@ -97,22 +102,12 @@ const chatCommands = [
     ])
   },
   {
-    commandName: "coin",
-    allowedRoles: ["any"],
-    shortcuts: ["!s coin"]
-  },
-  {
     commandName: "commands",
     allowedRoles: ["any"],
     chatCommandCallback: (commandData) => ({
       clientCommand: "sendCommands",
       args: [commandData]
     })
-  },
-  {
-    commandName: "dark",
-    allowedRoles: ["any"],
-    shortcuts: ["!s dark"]
   },
   {
     commandName: "drop",
@@ -145,11 +140,9 @@ const chatCommands = [
     shortcuts: ["!s eyes"]
   },
   {
-    commandName: "fortune",
-    allowedRoles: ["broadcaster"],
-    chatCommandCallback: () => ({
-      clientCommand: "clearScreen"
-    })
+    commandName: "fail",
+    allowedRoles: ["any"],
+    shortcuts: ["!s concern"]
   },
   {
     commandName: "funny",
@@ -171,14 +164,14 @@ const chatCommands = [
     })
   },
   {
+    commandName: "gottem",
+    allowedRoles: ["any"],
+    shortcuts: ["!s gottem"]
+  },
+  {
     commandName: "hatemylife",
     allowedRoles: ["broadcaster", "subscriber"],
     shortcuts: ["!s ihatemylife"]
-  },
-  {
-    commandName: "highaf",
-    allowedRoles: ["any"],
-    shortcuts: ["!s afroman"]
   },
   {
     commandName: "hydrate",
@@ -188,6 +181,7 @@ const chatCommands = [
   {
     commandName: "lurk",
     allowedRoles: ["any"],
+    shortcuts: ["!s nobody"],
     chatCommandCallback: ({ chatter }) => ({
       clientCommand: "sendBotMessage",
       args: [`/me ${chatter.userName} slowly fades away into the night`]
@@ -209,15 +203,35 @@ const chatCommands = [
     shortcuts: ["!s nerd"]
   },
   {
-    commandName: "noah",
+    commandName: "next",
+    allowedRoles: ["any"],
+    shortcuts: ["!s time"]
+  },
+  {
+    commandName: "nice",
+    allowedRoles: ["any"],
+    shortcuts: ["!s nice"]
+  },
+  {
+    commandName: "no",
     allowedRoles: ["any"],
     shortcuts: ["!s noah"]
+  },
+  {
+    commandName: "notlistening",
+    allowedRoles: ["any"],
+    shortcuts: ["!s listening"]
   },
   {
     commandName: "lazy",
     aliases: ["ok"],
     allowedRoles: ["any"],
     shortcuts: ["!s dontcare"]
+  },
+  {
+    commandName: "offbyone",
+    allowedRoles: ["any"],
+    shortcuts: ["!s miscount"]
   },
   {
     commandName: "overlays",
@@ -228,12 +242,30 @@ const chatCommands = [
     })
   },
   {
+    commandName: "pain",
+    allowedRoles: ["any"],
+    shortcuts: ["!s pain"]
+  },
+  {
     commandName: "project",
     allowedRoles: ["any"],
     chatCommandCallback: () => ({
       clientCommand: "sendBotMessage",
       args: ["Our new project is a Redwood JS App version of our Amazon Product Price scanner. It's getting close to user beta, but you can view it now at https://unboxed.deals"]
     })
+  },
+  {
+    commandName: "railway",
+    allowedRoles: ["any"],
+    chatCommandCallback: () => ({
+      clientCommand: "sendBotMessage",
+      args: ["I host most of my projects on Railway.app, use my referral code to sign up https://railway.app?referralCode=tfNFtC"]
+    })
+  },
+  {
+    commandName: "repeat",
+    allowedRoles: ["any"],
+    shortcuts: ["!s rookie"]
   },
   {
     commandName: "rimshot",
@@ -246,9 +278,19 @@ const chatCommands = [
     shortcuts: ["!s rude"]
   },
   {
+    commandName: "rules",
+    allowedRoles: ["any"],
+    shortcuts: ["!s rules"]
+  },
+  {
+    commandName: "serious",
+    allowedRoles: ["any"],
+    shortcuts: ["!s serious"]
+  },
+  {
     commandName: "socials",
     allowedRoles: ["any"],
-    shortcuts: ["!youtube", "!github", "!twitter"]
+    shortcuts: ["!youtube", "!twitter"]
   },
   {
     commandName: "sound",
@@ -266,11 +308,6 @@ const chatCommands = [
       clientCommand: "sendSoundNames",
       args: [chatter]
     })
-  },
-  {
-    commandName: "spread",
-    allowedRoles: ["any"],
-    shortcuts: ["!s spreadit"]
   },
   {
     commandName: "start",
@@ -302,11 +339,6 @@ const chatCommands = [
       clientCommand: "playSound",
       args: ["larry", fakeBroadcaster]
     })
-  },
-  {
-    commandName: "time",
-    allowedRoles: ["any"],
-    shortcuts: ["!s time"]
   },
   {
     commandName: "twitter",

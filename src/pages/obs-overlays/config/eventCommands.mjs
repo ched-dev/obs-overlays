@@ -69,7 +69,7 @@ const eventCommands = [
           title: "> Gifted Subscription",
           userName: eventData.user_name,
           action: "subscribed",
-          sound: "wow",
+          sound: "dumb",
           template: "user-action-template",
           timeout: 4 * 1000 // shorter gift sub timeouts
         }]
@@ -85,7 +85,7 @@ const eventCommands = [
           title: "> New Subscription",
           userName: eventData.user_name,
           action: "subscribed",
-          sound: "wow",
+          sound: "dumb",
           template: "user-action-template"
         }]
       },
@@ -105,7 +105,7 @@ const eventCommands = [
           userName: eventData.user_name,
           action: `subscribed${eventData.streak_months ? [" on a", eventData.streak_months, "month streak"].join(" ") : ""}${eventData.message.text ? " with the msg" : ""}`,
           message: eventData.message.text || undefined,
-          sound: "wow",
+          sound: "dumb",
           template: eventData.message.text ? "user-action-with-message-template" : "user-action-template"
         }]
       },
@@ -124,14 +124,14 @@ const eventCommands = [
           title: "> Gifted Subscriptions",
           userName: eventData.user_name || `undefined`,
           action: `gifted ${eventData.total} sub${eventData.total > 1 ? 's' : ''}${eventData.cumulative_total > eventData.total ? [', they\'ve gifted', eventData.cumulative_total, 'total'].join(' ') : ''}`,
-          sound: "wow",
+          sound: "gift",
           template: "user-action-template"
         }]
       },
-      {
-        clientCommand: "playSound",
-        args: ["gift"]
-      },
+      // {
+      //   clientCommand: "playSound",
+      //   args: ["gift"]
+      // },
       {
         clientCommand: "sendBotMessage",
         args: [`@${eventData.user_login || `undefined`} - thanks for the gift subscription${eventData.total > 1 ? 's' : ''}, you da best!`]
